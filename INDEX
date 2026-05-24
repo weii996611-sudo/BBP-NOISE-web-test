@@ -1,0 +1,1965 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>BBPATROL 黑箱糾察隊</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* ---------------------------------------------------
+       1. 核心變數設定 (LOGO 配色：黑、白、藍、紅)
+    --------------------------------------------------- */
+    :root {
+      --bg-dark: #030303;        /* 極深黑底 */
+      --card-bg: #0A0A0C;        /* 卡片深灰底 */
+      --tech-blue: #1A56DB;      /* 科技藍 */
+      --tech-blue-glow: rgba(26, 86, 219, 0.2);
+      --tech-red: #E11D48;       /* 警示紅 */
+      --tech-red-glow: rgba(225, 29, 72, 0.2);
+      --tech-white: #FFFFFF;     /* 純白 */
+      --tech-gray: #1F2937;      /* 邊框灰 */
+      --text-muted: #9CA3AF;     /* 次要文字灰 */
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--tech-white);
+      font-family: 'PingFang TC', 'Microsoft JhengHei', ui-sans-serif, system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+    }
+    .btn-icon {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+      vertical-align: -3px;
+      margin-right: 6px;
+    }
+
+    /* ---------------------------------------------------
+       2. 頂部導覽列 (Header)
+    --------------------------------------------------- */
+    #header {
+      background-color: var(--bg-dark);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--tech-gray);
+      flex-shrink: 0;
+      gap: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      z-index: 10;
+    }
+
+    .brand-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      line-height: 1.1;
+      color: var(--tech-white);
+    }
+
+    .brand-subtitle {
+      color: var(--tech-white);
+      font-size: 0.95rem;
+      text-transform: none;
+      margin-top: 6px;
+      letter-spacing: 2px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    /* 頂部按鈕統一風格 */
+    .notify-header-btn,
+    .back-btn,
+    .refresh-btn {
+      background-color: transparent;
+      color: var(--tech-white);
+      border: 1px solid var(--tech-blue);
+      border-radius: 6px; /* 改為微圓角，更具科技感 */
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .notify-header-btn { display: none !important; }
+    .back-btn, .refresh-btn { display: none; }
+
+    .notify-header-btn:active,
+    .back-btn:active,
+    .refresh-btn:active {
+      background-color: var(--tech-blue-glow);
+    }
+
+    /* ---------------------------------------------------
+       3. 主選單 (Menu Screen)
+    --------------------------------------------------- */
+    #main-wrapper {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      min-height: 0;
+    }
+
+    #menu-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      padding: 20px;
+      height: 100%;
+      overflow-y: auto;
+      /* 乾淨的背景，只留極微弱的藍光點綴 */
+      background: radial-gradient(circle at 50% 0%, var(--tech-blue-glow), transparent 50%), var(--bg-dark);
+    }
+
+    .menu-hero {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    /* LOGO 容器極簡化 */
+    .menu-logo-card {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      border-radius: 20px;
+      background: var(--tech-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      border: 2px solid var(--tech-gray);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+    }
+    .menu-logo-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .menu-logo-card {
+      cursor: pointer;
+      z-index: 2;
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        filter 0.18s ease;
+    }
+    
+    .menu-logo-card:active {
+      transform: scale(0.94);
+      filter: brightness(0.92);
+    }
+    
+    .menu-logo-card.social-open {
+      box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.8),
+        0 0 22px rgba(26, 86, 219, 0.45);
+    }
+    
+    .menu-social-pop {
+      position: absolute;
+      right: calc(100% + 48px);
+      top: 50%;
+      transform: translateY(-50%) translateX(16px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+      z-index: 3;
+    }
+    
+    .menu-social-pop.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(-50%) translateX(0);
+    }
+    
+    .menu-social-pop .social-link {
+      width: 42px;
+      height: 42px;
+      box-shadow:
+        0 8px 18px rgba(0, 0, 0, 0.45),
+        0 0 12px rgba(26, 86, 219, 0.16);
+    }
+    
+    .menu-social-pop .social-link:hover {
+      transform: translateY(-2px) scale(1.08);
+    }
+    
+    .menu-social-pop .social-link:active {
+      transform: scale(0.9);
+    }
+    .menu-logo {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+    }
+
+    .menu-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--tech-white);
+      border: 1px solid var(--tech-blue);
+      background: var(--tech-blue-glow);
+      border-radius: 4px; /* 方正科技感 */
+      padding: 4px 12px;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .menu-title {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: var(--tech-white);
+    }
+    .store-link-group {
+      position: absolute;
+      top: 0;
+      right: -84px;
+      width: 58px;
+      height: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0;
+      margin-top: 0;
+      flex-wrap: nowrap;
+    }
+    
+    .store-link {
+      width: 58px;
+      height: 58px;
+      min-width: 0;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+      text-decoration: none;
+      background: transparent;
+      border: none;
+      padding: 0;
+      transition:
+        transform 0.18s ease,
+        filter 0.18s ease,
+        box-shadow 0.18s ease;
+    }
+    
+    .store-link img {
+      width: 58px;
+      height: 58px;
+      object-fit: contain;
+      display: block;
+    }
+    .store-link:hover {
+      transform: translateY(-2px) scale(1.08);
+      filter: brightness(1.16);
+      box-shadow: 0 0 12px rgba(26, 86, 219, 0.35);
+    }
+    
+    .store-link:active {
+      transform: scale(0.9);
+      filter: brightness(0.9);
+    }
+    .home-footer {
+      width: 100%;
+      max-width: 520px;
+      margin-top: 4px;
+      padding: 14px 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 13px;
+    }
+    
+    .follow-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--tech-white);
+      letter-spacing: 1px;
+    }
+    
+    .social-link-group {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      align-items: center;
+    }
+    
+    .social-link {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 1rem;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+      transition: transform 0.18s ease, opacity 0.18s ease;
+    }
+    
+    .social-link:hover {
+      transform: translateY(-2px) scale(1.04);
+    }
+    .social-link img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .social-link.fb {
+      background: #1877f2;
+      font-size: 1.7rem;
+      font-family: Arial, sans-serif;
+    }
+    
+    .social-link.ig {
+      background: radial-gradient(circle at 30% 110%, #fdf497 0%, #fdf497 12%, #fd5949 38%, #d6249f 62%, #285aeb 100%);
+      font-size: 1.55rem;
+    }
+    
+    .social-link.threads {
+      background: #ffffff;
+      color: #000000;
+      font-size: 1.55rem;
+    }
+    
+    .social-link.line {
+      background: #06c755;
+      font-size: 0.68rem;
+      letter-spacing: -0.5px;
+    }
+    
+    .copyright {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+
+    /* 區域按鈕網格 */
+    .region-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      width: 82%;
+      max-width: 430px;
+    }
+
+    .region-btn {
+      position: relative;
+      min-height: 72px;
+      background: var(--card-bg);
+      border: 1px solid var(--tech-gray);
+      border-radius: 12px;
+      color: var(--tech-white);
+      padding: 14px;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .region-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    .region-arrow {
+      color: var(--tech-blue);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .region-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--tech-blue);
+      box-shadow: 0 4px 15px var(--tech-blue-glow);
+    }
+
+    .region-btn:active {
+      transform: scale(0.98);
+      background: var(--tech-blue-glow);
+    }
+
+    /* ---------------------------------------------------
+       4. 數據頁面 (Data Screen) & 卡片
+    --------------------------------------------------- */
+    #area-filter-bar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 18px;
+      z-index: 6;
+      display: none;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 0 70px 10px 24px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      scroll-padding-right: 70px;
+    }
+    
+    #area-filter-bar::-webkit-scrollbar {
+      display: none;
+    }
+    #area-filter-bar::after {
+      content: "";
+      position: fixed;
+      right: 0;
+      bottom: 18px;
+      width: 64px;
+      height: 52px;
+      pointer-events: none;
+      background: linear-gradient(90deg, rgba(3, 3, 3, 0), var(--bg-dark) 72%);
+      z-index: 7;
+    }
+    
+    .area-filter-btn {
+      flex: 0 0 auto;
+      background: rgba(10, 10, 12, 0.92);
+      color: var(--tech-white);
+      border: 1px solid var(--tech-gray);
+      border-radius: 999px;
+      padding: 9px 16px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+      transition: all 0.2s ease;
+    }
+    
+    .area-filter-btn.active {
+      color: var(--tech-white);
+      border-color: var(--tech-blue);
+      background: linear-gradient(135deg, var(--tech-blue), var(--tech-red));
+    }
+    
+    .area-filter-btn:active {
+      transform: scale(0.96);
+    }
+    #data-screen {
+      display: none;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      height: 100%;
+      padding: 24px 24px 110px;
+      gap: 24px;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+    }
+
+    #data-screen {
+      overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-x: contain;
+      scroll-behavior: smooth;
+    }
+    
+    /* 電腦版顯示橫向捲軸 */
+    #data-screen::-webkit-scrollbar {
+      display: block;
+      height: 10px;
+    }
+    
+    #data-screen::-webkit-scrollbar-track {
+      background: #050505;
+    }
+    
+    #data-screen::-webkit-scrollbar-thumb {
+      background: linear-gradient(90deg, var(--tech-blue), var(--tech-red));
+      border-radius: 999px;
+    }
+    
+    #data-screen::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(90deg, #2f6bff, #ff2f62);
+    }
+    /* 電腦版：降低吸附強度，讓滑鼠滾輪更順 */
+    @media (min-width: 769px) {
+      #data-screen {
+        scroll-snap-type: x proximity;
+      }
+    }
+    
+    /* 手機版：保留原本一張一張吸附 */
+    @media (max-width: 768px) {
+      #data-screen {
+        scroll-snap-type: x mandatory;
+      }
+    }
+    /* 手機版維持隱藏捲軸 */
+    @media (max-width: 768px) {
+      #data-screen::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    .bb-card {
+      /* 1. 簡化背景與邊框色調：採用高級灰色調 */
+      background:
+        linear-gradient(rgba(20, 20, 22, 0.65), rgba(20, 20, 22, 0.65)) padding-box,
+        solid 1px rgba(255, 255, 255, 0.08) border-box; /* 移除藍紅漸變，改為細緻的灰色單色邊框 */
+    
+      /* 2. 提升設計感：加入高級玻璃態效果 (Glassmorphism) */
+      backdrop-filter: blur(12px); /* 增加背景模糊 */
+      -webkit-backdrop-filter: blur(12px);
+    
+      /* 3. 優化細節： */
+      border: none; /* 原本 2px 透明邊框改為 1px 灰色 solid */
+      border-radius: 16px; /* 稍微縮小圓角，更顯俐落 */
+      width: 80vw;
+      max-width: 340px;
+      min-width: 280px;
+      flex-shrink: 0;
+      scroll-snap-align: center;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+    
+      /* 4. 簡化陰影與發光：統一為一個更柔和、單色的深灰色陰影 */
+      box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.6), /* 主要深色陰影 */
+        0 0 1px rgba(255, 255, 255, 0.05); /* 移除彩色發光，只留極微弱的灰白色邊框微光 */
+    }
+    
+    /* 5. 進一步簡化內部分割線條與元素色調：以下代碼僅供參考，用於優化按鈕 */
+    /* 例如，您可以將按鈕的文字顏色改為白色，並保留邊框顏色，以保持整體簡潔 */
+    .share-card-btn {
+      border: 1px solid var(--tech-blue);
+      color: #FFFFFF; /* 改為白色，更清晰 */
+    }
+    
+    .remove-card-btn {
+      border: 1px solid var(--tech-red);
+      color: #FFFFFF; /* 改為白色，更清晰 */
+    }
+
+    /* 卡片頂部的紅藍科技線條點綴 */
+    .bb-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--tech-blue) 0%, var(--tech-red) 100%);
+    }
+
+    .bb-card.fade-out {
+      opacity: 0;
+      transform: scale(0.8);
+      width: 0;
+      min-width: 0;
+      padding: 0;
+      margin: 0;
+      border: 0 solid transparent;
+    }
+
+    .bb-title {
+      font-size: 1.85rem;
+      color: var(--tech-white);
+      margin-bottom: 18px;
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    .image-container {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      background-color: var(--bg-dark);
+      border: 1px solid var(--tech-gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      touch-action: pan-y;
+      user-select: none;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* 改為 cover 讓地圖填滿更俐落 */
+      display: block;
+    }
+    .image-container {
+      position: relative;
+    }
+    
+    .image-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(0, 0, 0, 0.55);
+      color: #ffffff;
+      font-size: 1.2rem;
+      font-weight: 900;
+      cursor: pointer;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .image-nav-btn.left {
+      left: 8px;
+    }
+    
+    .image-nav-btn.right {
+      right: 8px;
+    }
+    
+    .image-dots {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 8px;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      z-index: 3;
+    }
+    
+    .image-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.45);
+    }
+    
+    .image-dot.active {
+      background: #ffffff;
+    }
+    .bb-body {
+      font-size: 1rem;
+      line-height: 1.5;
+      text-align: center;
+      color: var(--tech-white);
+      margin-bottom: 8px;
+      word-break: break-word;
+      font-weight: 500;
+    }
+
+    .bb-meta {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-bottom: 20px;
+      text-align: center;
+      font-family: monospace; /* 時間加上一點科技數據感 */
+    }
+
+    /* 卡片按鈕 */
+    .card-control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .share-card-btn,
+    .remove-card-btn {
+      background-color: transparent;
+      border-radius: 6px;
+      padding: 10px 15px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+      text-align: center;
+    }
+    .share-card-btn .btn-icon {
+      filter: brightness(0) invert(1);
+    }
+    .share-card-btn {
+      color: var(--tech-white);
+      border: 1px solid var(--tech-blue);
+    }
+    .share-card-btn:active {
+      background-color: var(--tech-blue);
+      color: var(--tech-white);
+    }
+
+    .remove-card-btn {
+      color: var(--tech-red);
+      border: 1px solid var(--tech-red);
+    }
+    .remove-card-btn:active:not(:disabled) {
+      background-color: var(--tech-red);
+      color: var(--tech-white);
+    }
+    .remove-card-btn:disabled {
+      cursor: not-allowed;
+      border-color: var(--tech-gray);
+      color: var(--text-muted);
+      background: transparent;
+    }
+
+    /* ---------------------------------------------------
+       5. 系統文字與通知 Modal
+    --------------------------------------------------- */
+    #no-data, #loading-text {
+      width: 100%;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 1rem;
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      letter-spacing: 1px;
+    }
+    
+    #no-data {
+      cursor: pointer;
+    }
+    
+    .no-data-home {
+      display: inline-block;
+      margin-top: 10px;
+      color: var(--tech-blue);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .error-text { color: var(--tech-red) !important; }
+
+    .notify-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+
+    .notify-box {
+      width: 100%;
+      max-width: 320px;
+      background: var(--card-bg);
+      border: 1px solid var(--tech-gray);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      /* 頂部藍線 */
+      border-top: 3px solid var(--tech-blue);
+    }
+
+    .notify-icon { font-size: 2rem; margin-bottom: 12px; }
+    
+    .notify-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--tech-white);
+      margin-bottom: 10px;
+    }
+
+    .notify-text {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .notify-actions {
+      display: flex;
+      flex-direction: column; /* 改為上下排列更乾淨 */
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .notify-allow-btn, .notify-later-btn {
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .notify-allow-btn {
+      background: var(--tech-blue);
+      color: var(--tech-white);
+      border: none;
+    }
+
+    .notify-later-btn {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--tech-gray);
+    }
+
+    .notify-note {
+      color: #666;
+      font-size: 0.75rem;
+      line-height: 1.4;
+      margin-top: 16px;
+    }
+
+    /* ---------------------------------------------------
+       6. 響應式微調
+    --------------------------------------------------- */
+    @media (max-width: 420px) {
+      .brand-title {
+        font-size: 1.2rem;
+      }
+    
+      .brand-subtitle {
+        font-size: 0.85rem;
+        letter-spacing: 1.5px;
+      }
+    
+      .home-footer {
+        padding-top: 6px;
+        gap: 11px;
+      }
+    
+      .follow-title {
+        font-size: 0.85rem;
+      }
+    
+      .social-link-group {
+        gap: 12px;
+      }
+    
+      .social-link {
+        width: 38px;
+        height: 38px;
+      }
+      .social-link img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+      .copyright {
+        font-size: 0.7rem;
+      }
+    
+      #area-filter-bar {
+        bottom: calc(18px + env(safe-area-inset-bottom));
+        padding: 0 62px 10px 18px;
+        scroll-padding-right: 62px;
+      }
+    
+      #area-filter-bar::after {
+        bottom: calc(18px + env(safe-area-inset-bottom));
+        width: 56px;
+      }
+    
+      .area-filter-btn {
+        padding: 8px 14px;
+        font-size: 0.86rem;
+      }
+    
+      #menu-screen {
+        justify-content: flex-start;
+        padding-top: 42px;
+        padding-bottom: calc(110px + env(safe-area-inset-bottom));
+        gap: 18px;
+      }
+    
+      .menu-hero {
+        position: relative;
+        margin-bottom: 0;
+      }
+    
+      .menu-logo-card {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 12px;
+      }
+    
+      .menu-logo {
+        width: 80px;
+        height: 80px;
+      }
+    
+      .menu-title {
+        font-size: 1.3rem;
+      }
+      .menu-social-pop {
+        right: calc(100% + 36px);
+        gap: 8px;
+      }
+      
+      .menu-social-pop .social-link {
+        width: 36px;
+        height: 36px;
+      }
+      
+      .menu-social-pop .social-link.fb {
+        font-size: 1.45rem;
+      }
+      
+      .menu-social-pop .social-link.ig,
+      .menu-social-pop .social-link.threads {
+        font-size: 1.35rem;
+      }
+      
+      .menu-social-pop .social-link.line {
+        font-size: 0.58rem;
+      }
+    
+      .store-link-group {
+        position: absolute;
+        top: 0;
+        right: -62px;
+        width: 44px;
+        height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0;
+        margin-top: 0;
+        flex-wrap: nowrap;
+      }
+    
+      .store-link {
+        width: 54px;
+        height: 54px;
+        min-width: 0;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        overflow: visible;
+        text-decoration: none;
+        background: transparent;
+        border: none;
+        padding: 0;
+        transition:
+          transform 0.18s ease,
+          filter 0.18s ease,
+          box-shadow 0.18s ease;
+      }
+      
+      .store-link img {
+        width: 54px;
+        height: 54px;
+        object-fit: contain;
+        display: block;
+      }
+    
+      .store-link:hover {
+        transform: translateY(-2px) scale(1.08);
+        filter: brightness(1.16);
+        box-shadow: 0 0 10px rgba(26, 86, 219, 0.28);
+      }
+    
+      .store-link:active {
+        transform: scale(0.9);
+        filter: brightness(0.9);
+      }
+    
+      .region-grid {
+        width: 92%;
+        max-width: 390px;
+        padding-bottom: 20px;
+        gap: 14px;
+      }
+      
+      .region-btn {
+        min-height: 70px;
+        padding: 12px;
+        align-items: center;
+        text-align: center;
+      }
+      
+      .region-name {
+        font-size: 1.1rem;
+        text-align: center;
+      }
+    
+      #data-screen {
+        align-items: flex-start;
+        padding-top: 42px;
+        padding-bottom: calc(110px + env(safe-area-inset-bottom));
+      }
+    
+      .bb-card {
+        width: 85vw;
+        padding: 20px;
+        transform: translateY(-10px);
+      }
+    
+      .bb-title {
+        font-size: 1.85rem;
+        letter-spacing: 1.5px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header id="header">
+    <div class="brand-group" onclick="goHome()" title="回首頁">
+      <div class="brand-title">BBPATROL</div>
+      <div class="brand-subtitle">黑箱糾察隊</div>
+    </div>
+
+    <div class="header-actions">
+      <button class="notify-header-btn" id="notify-header-btn" onclick="showNotifyModal(true)">🔔 接收通知</button>
+      <button class="back-btn" id="back-btn" onclick="goBackToMenu()">
+        <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/sign/BBP%20LOGO/undo.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8yNzI5Y2M5OC1mM2IzLTRhNGMtOTAzMC03M2M2MjZlNTM0NTIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJCQlAgTE9HTy91bmRvLnBuZyIsImlhdCI6MTc3OTQxNTQzMCwiZXhwIjoxODc0MDIzNDMwfQ.B8kpcetL_P-vhvMZJpogz1JeaONfOUYr8Rm0xSCqx-8" class="btn-icon"> 返回
+      </button>
+      <button class="refresh-btn" id="refresh-btn" onclick="refreshCurrentRegion()">
+        <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/sign/BBP%20LOGO/refresh.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8yNzI5Y2M5OC1mM2IzLTRhNGMtOTAzMC03M2M2MjZlNTM0NTIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJCQlAgTE9HTy9yZWZyZXNoLnBuZyIsImlhdCI6MTc3OTQxNTU3OCwiZXhwIjoxODc0MDIzNTc4fQ.ViXgOCFi03BybIFmaOz4beXe3ZJ2cyAztnltb865iCE" class="btn-icon"> 更新
+      </button>
+    </div>
+  </header>
+
+  <main id="main-wrapper">
+    <div id="menu-screen">
+      <div class="menu-hero">
+        <div class="menu-logo-wrap">
+          <div class="menu-social-pop" id="menu-social-pop">
+            <a class="social-link fb" href="https://www.facebook.com/profile.php?id=61577787920069" target="_blank" rel="noopener">
+              <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/S-facebook.png" alt="Facebook">
+            </a>
+          
+            <a class="social-link ig" href="https://www.instagram.com/bbpatrol.tw/" target="_blank" rel="noopener">
+              <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/S-instagram.png" alt="Instagram">
+            </a>
+          
+            <a class="social-link threads" href="https://www.threads.com/@bbpatrol.tw?xmt=AQF0thXHVYLjn3-qB104806dKL_u3DEXpTiDYphUWcuX1Q5oDRx5g6GWFtGuvHTIWd5CTh_tPQ" target="_blank" rel="noopener">
+              <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/S-threads.png" alt="Threads">
+            </a>
+          
+            <a class="social-link line" href="https://lin.ee/zdmFhZb" target="_blank" rel="noopener">
+              <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/S-line.png" alt="LINE">
+            </a>
+          </div>
+        
+          <div class="menu-logo-card" onclick="toggleMenuSocial(event)">
+            <img src="LOGO2.png" alt="BBPATROL Logo" class="menu-logo">
+          </div>
+        </div>
+        <div class="menu-title">噪音偵測地點</div>
+    
+        <div class="store-link-group">
+          <a class="store-link ios-link" href="https://apps.apple.com/tw/app/bbpatrol%E9%BB%91%E7%AE%B1%E7%B3%BE%E5%AF%9F%E9%9A%8A/id6746429798" target="_blank" rel="noopener">
+            <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/game.png" alt="App Store">
+          </a>
+    
+          <a class="store-link google-link"  href="https://play.google.com/store/apps/details?id=com.timer_swift&pli=1" target="_blank" rel="noopener">
+            <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/play.png" alt="Google Play">
+          </a>
+        </div>
+      </div>
+    
+      <div class="region-grid">
+        <div class="region-btn" onclick="filterData('北北基')">
+          <span class="region-name">北北基</span>
+        </div>
+    
+        <div class="region-btn" onclick="filterData('桃竹苗')">
+          <span class="region-name">桃竹苗</span>
+        </div>
+    
+        <div class="region-btn" onclick="filterData('中彰投')">
+          <span class="region-name">中彰投</span>
+        </div>
+    
+        <div class="region-btn" onclick="filterData('雲嘉南')">
+          <span class="region-name">雲嘉南</span>
+        </div>
+    
+        <div class="region-btn" onclick="filterData('高屏')">
+          <span class="region-name">高屏</span>
+        </div>
+    
+        <div class="region-btn" onclick="filterData('宜花東')">
+          <span class="region-name">宜花東</span>
+        </div>
+      </div>
+    
+      <div class="home-footer">
+        <div class="follow-title">追蹤 BBpatrol 最新消息</div>
+    
+        <div class="social-link-group">
+          <a class="social-link fb" href="https://www.facebook.com/profile.php?id=61577787920069" target="_blank" rel="noopener">
+              <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/S-facebook.png" alt="Facebook">
+            </a>
+          
+            <a class="social-link ig" href="https://www.instagram.com/bbpatrol.tw/" target="_blank" rel="noopener">
+              <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/S-instagram.png" alt="Instagram">
+            </a>
+          
+            <a class="social-link threads" href="https://www.threads.com/@bbpatrol.tw?xmt=AQF0thXHVYLjn3-qB104806dKL_u3DEXpTiDYphUWcuX1Q5oDRx5g6GWFtGuvHTIWd5CTh_tPQ" target="_blank" rel="noopener">
+              <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/S-threads.png" alt="Threads">
+            </a>
+          
+            <a class="social-link line" href="https://lin.ee/zdmFhZb" target="_blank" rel="noopener">
+              <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/S-line.png" alt="LINE">
+            </a>
+        </div>
+    
+        <div class="copyright">
+          © 2025 BBpatrol 黑箱糾察隊・保留所有權利
+        </div>
+      </div>
+    </div>
+
+    <div id="data-screen"></div>
+    <div id="area-filter-bar" style="display: none;"></div>
+    <div id="loading-text" style="display: none;">[ 系統連線中... ]</div>
+    <div id="no-data" style="display: none;" onclick="goHome()">
+      該區域暫無回報紀錄<br>
+      <span class="no-data-home">點此返回首頁</span>
+    </div>
+
+    <div id="notify-modal" class="notify-modal" style="display: none;">
+      <div class="notify-box">
+        <div class="notify-icon">🔔</div>
+        <div class="notify-title">開啟系統通知？</div>
+        <div class="notify-text">
+          當有新的噪音熱點回報時，系統將第一時間推播給您。
+        </div>
+
+        <div class="notify-actions">
+          <button class="notify-allow-btn" onclick="requestSiteNotification()">允許通知</button>
+          <button class="notify-later-btn" onclick="closeNotifyModal(true)">稍後再說</button>
+        </div>
+
+        <div class="notify-note">
+          * iOS 用戶請使用 Safari 開啟，並建議將本頁面加入主畫面。
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const SUPABASE_URL = "https://sadnhsddereuhpfvdquk.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_k_u54EP-ZibEk5ABR2_lQA__c41LUZI";
+    const REGION_LIST = ["北北基", "桃竹苗", "中彰投", "雲嘉南", "高屏", "宜花東"];
+
+    let allData = [];
+    let currentRegion = "";
+    let currentAreaFilter = "";
+    let supabaseClient = null;
+    let isHandlingPopState = false;
+    let notifyPromptTimer = null;
+    let notifyPromptShownThisSession = false;
+
+    if (window.supabase && window.supabase.createClient) {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } else {
+      console.error("Supabase CDN 載入失敗");
+    }
+
+    window.addEventListener("load", async function () {
+      getDeviceId();
+      showLoading("[ 系統連線同步中... ]");
+
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("resetNotify") === "1") {
+        localStorage.removeItem("bbp_notify_closed_at");
+        localStorage.removeItem("bbp_notify_enabled");
+      }
+
+      await loadDataFromServer();
+      hideLoading();
+      updateNotifyHeaderButton();
+      scheduleNotifyPrompt();
+      enableDesktopHorizontalWheel();
+
+      const region = params.get("region");
+      const id = params.get("id");
+
+      if (region && REGION_LIST.includes(region)) {
+        filterData(region, "", true);
+        if (id) {
+          setTimeout(function () { scrollToCard(id); }, 300);
+        }
+      }
+    });
+    window.addEventListener("popstate", function () {
+      const params = new URLSearchParams(window.location.search);
+      const region = params.get("region");
+    
+      isHandlingPopState = true;
+    
+      if (region && REGION_LIST.includes(region)) {
+        filterData(region, "", true);
+      } else {
+        showMenu(true);
+      }
+    
+      isHandlingPopState = false;
+    });
+　　function goHome() {
+      showMenu(true);
+    
+      const cleanUrl =
+        window.location.protocol +
+        "//" +
+        window.location.host +
+        window.location.pathname;
+    
+      window.history.replaceState({ page: "home" }, "", cleanUrl);
+    }
+    function toggleMenuSocial(event) {
+      if (event) event.stopPropagation();
+    
+      const pop = document.getElementById("menu-social-pop");
+      const logoCard = document.querySelector(".menu-logo-card");
+    
+      if (!pop || !logoCard) return;
+    
+      const isOpen = pop.classList.toggle("show");
+      logoCard.classList.toggle("social-open", isOpen);
+    }
+    
+    document.addEventListener("click", function (event) {
+      const pop = document.getElementById("menu-social-pop");
+      const logoWrap = document.querySelector(".menu-logo-wrap");
+      const logoCard = document.querySelector(".menu-logo-card");
+    
+      if (!pop || !logoWrap || !logoCard) return;
+    
+      if (!logoWrap.contains(event.target)) {
+        pop.classList.remove("show");
+        logoCard.classList.remove("social-open");
+      }
+    });
+    
+    function goBackToMenu() {
+      goHome();
+    }
+    function showLoading(text) {
+      const loadingText = document.getElementById("loading-text");
+      loadingText.classList.remove("error-text");
+      loadingText.textContent = text || "[ 系統連線中... ]";
+      loadingText.style.display = "block";
+    }
+
+    function showError(text) {
+      const loadingText = document.getElementById("loading-text");
+      loadingText.classList.add("error-text");
+      loadingText.textContent = text || "連線失敗";
+      loadingText.style.display = "block";
+    }
+
+    function hideLoading() {
+      document.getElementById("loading-text").style.display = "none";
+    }
+
+    function getDeviceId() {
+      let deviceId = localStorage.getItem("bbp_noise_device_id");
+      if (!deviceId) {
+        deviceId = "dev_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 12);
+        localStorage.setItem("bbp_noise_device_id", deviceId);
+      }
+      return deviceId;
+    }
+
+    function shouldShowNotifyPrompt() {
+      if (notifyPromptShownThisSession) return false;
+      const lastClosedAt = Number(localStorage.getItem("bbp_notify_closed_at") || "0");
+      const threeDays = 3 * 24 * 60 * 60 * 1000;
+      if (lastClosedAt && Date.now() - lastClosedAt < threeDays) return false;
+      if ("Notification" in window && Notification.permission === "granted") return false;
+      return true;
+    }
+
+    function showNotifyModal(forceShow) {
+      if (!forceShow && !shouldShowNotifyPrompt()) return;
+      notifyPromptShownThisSession = true;
+      const modal = document.getElementById("notify-modal");
+      if (modal) modal.style.display = "flex";
+    }
+
+    function closeNotifyModal(remember) {
+      const modal = document.getElementById("notify-modal");
+      if (modal) modal.style.display = "none";
+      if (remember) localStorage.setItem("bbp_notify_closed_at", String(Date.now()));
+    }
+
+    function scheduleNotifyPrompt() {
+      if (notifyPromptTimer) return;
+      notifyPromptTimer = setTimeout(function () { showNotifyModal(); }, 7000);
+    }
+
+    function showNotifyPromptAfterRegionClick() {
+      setTimeout(function () { showNotifyModal(); }, 800);
+    }
+
+    async function requestSiteNotification() {
+      if (!("Notification" in window)) {
+        alert("目前瀏覽器不支援網站通知。iPhone 使用者建議用 Safari 開啟，並將本頁加入主畫面。");
+        closeNotifyModal(true);
+        return;
+      }
+      if (Notification.permission === "denied") {
+        alert("你已封鎖網站通知。若要開啟，請到瀏覽器設定中重新允許通知。");
+        closeNotifyModal(true);
+        return;
+      }
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission === "granted") {
+          localStorage.setItem("bbp_notify_enabled", "true");
+          closeNotifyModal(false);
+          updateNotifyHeaderButton();
+          try {
+            new Notification("BBPATROL 系統連線成功", { body: "當有新的測速/噪音熱點時，將自動推播通知。" });
+          } catch (e) {}
+        } else {
+          closeNotifyModal(true);
+        }
+      } catch (error) {
+        alert("通知權限開啟失敗，請稍後再試。");
+        closeNotifyModal(true);
+      }
+    }
+
+    function updateNotifyHeaderButton() {
+      const btn = document.getElementById("notify-header-btn");
+      if (!btn) return;
+      if ("Notification" in window && Notification.permission === "granted") {
+        btn.textContent = "🔔 通知已開啟";
+        btn.disabled = true;
+        btn.style.opacity = "0.4";
+        btn.style.borderColor = "var(--tech-gray)";
+        btn.style.color = "var(--tech-white)";
+        return;
+      }
+      btn.textContent = "🔔 接收通知";
+      btn.disabled = false;
+      btn.style.opacity = "1";
+    }
+
+    function formatCreatedAt(dateString) {
+      if (!dateString) return "";
+      const date = new Date(dateString);
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+    function getAreaTitle(text) {
+      const rawText = String(text || "").trim();
+    
+      // 取前 4 個中文字，忽略空格、數字、符號
+      const chineseChars = rawText.match(/[\u4e00-\u9fff]/g);
+    
+      if (chineseChars && chineseChars.length >= 4) {
+        return chineseChars.slice(0, 4).join("");
+      }
+    
+      // 如果資料不足 4 個中文字，就退回取前 4 個字元
+      return rawText.slice(0, 4) || "紀錄檔";
+    }
+    function getBodyTextWithoutArea(text) {
+      const rawText = String(text || "").trim();
+    
+      let chineseCount = 0;
+      let cutIndex = 0;
+    
+      for (let i = 0; i < rawText.length; i++) {
+        if (/[\u4e00-\u9fff]/.test(rawText[i])) {
+          chineseCount++;
+        }
+    
+        if (chineseCount === 4) {
+          cutIndex = i + 1;
+          break;
+        }
+      }
+    
+      if (chineseCount >= 4) {
+        return rawText.slice(cutIndex).trim();
+      }
+    
+      return rawText;
+    }
+    function renderAreaFilterButtons(regionItems, activeArea) {
+      const bar = document.getElementById("area-filter-bar");
+      if (!bar) return;
+    
+      const areaList = [];
+      const areaCountMap = {};
+    
+      regionItems.forEach(function (item) {
+        const area = getAreaTitle(item.text);
+    
+        if (!area) return;
+    
+        if (!areaCountMap[area]) {
+          areaCountMap[area] = 0;
+          areaList.push(area);
+        }
+    
+        areaCountMap[area]++;
+      });
+    
+      if (areaList.length <= 1) {
+        bar.innerHTML = "";
+        bar.style.display = "none";
+        return;
+      }
+    
+      bar.innerHTML = "";
+    
+      const allBtn = document.createElement("button");
+      allBtn.className = "area-filter-btn" + (!activeArea ? " active" : "");
+      allBtn.type = "button";
+      allBtn.textContent = "全部";
+    
+      allBtn.addEventListener("click", function () {
+        filterData(currentRegion, "");
+      });
+    
+      bar.appendChild(allBtn);
+    
+      areaList.forEach(function (area) {
+        const count = areaCountMap[area] || 0;
+        const displayText = count > 1 ? area + count : area;
+    
+        const btn = document.createElement("button");
+        btn.className = "area-filter-btn" + (activeArea === area ? " active" : "");
+        btn.type = "button";
+        btn.textContent = displayText;
+    
+        btn.addEventListener("click", function () {
+          filterData(currentRegion, area);
+        });
+    
+        bar.appendChild(btn);
+      });
+    
+      bar.style.display = "flex";
+    }
+
+    async function loadDataFromServer(callback) {
+      if (!supabaseClient) {
+        allData = [];
+        showError("資料庫連線失敗，請檢查系統參數。");
+        return;
+      }
+      try {
+        const { data, error } = await supabaseClient
+          .from("noise_reports")
+          .select("id, text, image_url, image_urls, region, report_logs, report_count, is_active, created_at")
+          .eq("is_active", true)
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        allData = (data || []).map(function (item) {
+          return {
+            id: item.id,
+            text: item.text || "",
+            imageUrl: item.image_url || "",
+            imageUrls: Array.isArray(item.image_urls) && item.image_urls.length > 0
+              ? item.image_urls
+              : (item.image_url ? [item.image_url] : []),
+            region: item.region || "",
+            reportLogs: item.report_logs || "",
+            reportCount: item.report_count || 0,
+            isActive: item.is_active,
+            createdAt: item.created_at || ""
+          };
+        });
+
+        if (typeof callback === "function") callback();
+      } catch (error) {
+        allData = [];
+        showError("系統異常：" + error.message);
+      }
+    }
+
+    function filterData(regionName, areaFilter = "", fromPopState = false) {
+      currentRegion = regionName;
+      currentAreaFilter = areaFilter;
+    
+      const dataScreen = document.getElementById("data-screen");
+      const noData = document.getElementById("no-data");
+    
+      dataScreen.innerHTML = "";
+      hideLoading();
+    
+      const regionItems = allData.filter(function (item) {
+        return String(item.region).trim() === regionName;
+      });
+    
+      renderAreaFilterButtons(regionItems, areaFilter);
+    
+      const filtered = areaFilter
+        ? regionItems.filter(function (item) {
+            return getAreaTitle(item.text) === areaFilter;
+          })
+        : regionItems;
+    
+      if (filtered.length > 0) {
+        filtered.forEach(function (item, index) {
+          const cardElement = createCardElement(item, index + 1, regionName);
+          dataScreen.appendChild(cardElement);
+        });
+    
+        dataScreen.style.display = "flex";
+        noData.style.display = "none";
+      } else {
+        dataScreen.style.display = "none";
+        noData.style.display = "block";
+      }
+    
+      document.getElementById("menu-screen").style.display = "none";
+      document.getElementById("back-btn").style.display = "block";
+      document.getElementById("refresh-btn").style.display = "block";
+    
+      const cleanUrl =
+        window.location.protocol +
+        "//" +
+        window.location.host +
+        window.location.pathname +
+        "?region=" +
+        encodeURIComponent(regionName);
+    
+      if (!fromPopState) {
+        window.history.pushState(
+          { page: "region", region: regionName },
+          "",
+          cleanUrl
+        );
+      }
+    
+      showNotifyPromptAfterRegionClick();
+    }
+
+    function createCardElement(item, cardNumber, regionName) {
+      const card = document.createElement("div");
+      card.className = "bb-card";
+      card.id = "card-box-" + item.id;
+
+      const title = document.createElement("div");
+      title.className = "bb-title";
+      title.textContent = getAreaTitle(item.text);
+      card.appendChild(title);
+
+      const images = Array.isArray(item.imageUrls) && item.imageUrls.length > 0
+        ? item.imageUrls
+        : (item.imageUrl ? [item.imageUrl] : []);
+      
+      if (images.length > 0) {
+        const imageContainer = document.createElement("div");
+        imageContainer.className = "image-container";
+      
+        const img = document.createElement("img");
+        let currentImageIndex = 0;
+      
+        img.src = images[currentImageIndex];
+        img.alt = "系統快照";
+        img.loading = "lazy";
+      
+        img.onerror = function () {
+          imageContainer.style.display = "none";
+        };
+      
+        imageContainer.appendChild(img);
+      
+        if (images.length > 1) {
+          const leftBtn = document.createElement("button");
+          leftBtn.className = "image-nav-btn left";
+          leftBtn.type = "button";
+          leftBtn.textContent = "‹";
+      
+          const rightBtn = document.createElement("button");
+          rightBtn.className = "image-nav-btn right";
+          rightBtn.type = "button";
+          rightBtn.textContent = "›";
+      
+          const dots = document.createElement("div");
+          dots.className = "image-dots";
+      
+          const dotElements = images.map(function (_, index) {
+            const dot = document.createElement("span");
+            dot.className = "image-dot" + (index === 0 ? " active" : "");
+            dots.appendChild(dot);
+            return dot;
+          });
+      
+          function updateCarouselImage() {
+            img.src = images[currentImageIndex];
+          
+            dotElements.forEach(function (dot, index) {
+              dot.className = "image-dot" + (index === currentImageIndex ? " active" : "");
+            });
+          }
+          
+          function showPrevImage() {
+            currentImageIndex =
+              currentImageIndex === 0
+                ? images.length - 1
+                : currentImageIndex - 1;
+          
+            updateCarouselImage();
+          }
+          
+          function showNextImage() {
+            currentImageIndex =
+              currentImageIndex === images.length - 1
+                ? 0
+                : currentImageIndex + 1;
+          
+            updateCarouselImage();
+          }
+          
+          leftBtn.addEventListener("click", function (event) {
+            event.stopPropagation();
+            showPrevImage();
+          });
+          
+          rightBtn.addEventListener("click", function (event) {
+            event.stopPropagation();
+            showNextImage();
+          });
+          
+          let touchStartX = 0;
+          let touchStartY = 0;
+          let touchEndX = 0;
+          let touchEndY = 0;
+          
+          imageContainer.addEventListener("touchstart", function (event) {
+            if (!event.touches || event.touches.length === 0) return;
+          
+            touchStartX = event.touches[0].clientX;
+            touchStartY = event.touches[0].clientY;
+          }, { passive: true });
+          
+          imageContainer.addEventListener("touchend", function (event) {
+            if (!event.changedTouches || event.changedTouches.length === 0) return;
+          
+            touchEndX = event.changedTouches[0].clientX;
+            touchEndY = event.changedTouches[0].clientY;
+          
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+          
+            // 避免上下滑頁面時誤觸，必須是明顯左右滑才切圖
+            if (Math.abs(diffX) < 45 || Math.abs(diffX) < Math.abs(diffY)) {
+              return;
+            }
+          
+            if (diffX > 0) {
+              showPrevImage();
+            } else {
+              showNextImage();
+            }
+          }, { passive: true });
+      
+          imageContainer.appendChild(leftBtn);
+          imageContainer.appendChild(rightBtn);
+          imageContainer.appendChild(dots);
+        }
+      
+        card.appendChild(imageContainer);
+      }
+
+      const body = document.createElement("div");
+      body.className = "bb-body";
+      body.textContent = getBodyTextWithoutArea(item.text);
+      card.appendChild(body);
+
+      const meta = document.createElement("div");
+      meta.className = "bb-meta";
+      const createdTime = formatCreatedAt(item.createdAt);
+      meta.textContent = createdTime ? "T: " + createdTime : "";
+      card.appendChild(meta);
+
+      const controls = document.createElement("div");
+      controls.className = "card-control-group";
+
+      const shareBtn = document.createElement("button");
+      shareBtn.className = "share-card-btn";
+      shareBtn.type = "button";
+      shareBtn.innerHTML = '<img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/sign/BBP%20LOGO/share.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8yNzI5Y2M5OC1mM2IzLTRhNGMtOTAzMC03M2M2MjZlNTM0NTIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJCQlAgTE9HTy9zaGFyZS5wbmciLCJpYXQiOjE3Nzk0MTU2MTMsImV4cCI6MTg3NDAyMzYxM30.ZuWXLgK9ohxg-YDP12NXf1Bsvj-0zwrr_DMKPRgonis" class="btn-icon"> 分享貼文';
+      shareBtn.addEventListener("click", function () { shareCard(shareBtn, regionName, item.id); });
+
+      const removeBtn = document.createElement("button");
+      removeBtn.className = "remove-card-btn";
+      removeBtn.type = "button";
+
+      const localKey = "bbp_noise_reported_" + item.id;
+      const lastReportedAt = Number(localStorage.getItem(localKey) || "0");
+      const isCoolingDown = Date.now() - lastReportedAt < 10 * 60 * 1000;
+
+      if (isCoolingDown) {
+        removeBtn.disabled = true;
+        removeBtn.textContent = "✓ 已送出通報";
+      } else {
+        removeBtn.innerHTML = '<img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/sign/BBP%20LOGO/delete-document.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8yNzI5Y2M5OC1mM2IzLTRhNGMtOTAzMC03M2M2MjZlNTM0NTIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJCQlAgTE9HTy9kZWxldGUtZG9jdW1lbnQucG5nIiwiaWF0IjoxNzc5NDE1NjUyLCJleHAiOjE4NzQwMjM2NTJ9.owSFEM6icP6Uduaj8wwtI8F0iO1zoW45J7qC5auXa8E" class="btn-icon"> 設備已撤離';
+        removeBtn.addEventListener("click", function () { reportWithdraw(removeBtn, item.id); });
+      }
+
+      controls.appendChild(shareBtn);
+      controls.appendChild(removeBtn);
+      card.appendChild(controls);
+
+      return card;
+    }
+
+    function showMenu(fromPopState = false) {
+      currentRegion = "";
+      document.getElementById("menu-screen").style.display = "flex";
+      document.getElementById("data-screen").style.display = "none";
+      document.getElementById("no-data").style.display = "none";
+      document.getElementById("back-btn").style.display = "none";
+      document.getElementById("refresh-btn").style.display = "none";
+      const areaFilterBar = document.getElementById("area-filter-bar");
+      if (areaFilterBar) {
+        areaFilterBar.style.display = "none";
+      }
+      hideLoading();
+      const cleanUrl =
+        window.location.protocol +
+        "//" +
+        window.location.host +
+        window.location.pathname;
+      
+      if (!fromPopState) {
+        window.history.replaceState({ page: "home" }, "", cleanUrl);
+      }
+    }
+
+    async function refreshCurrentRegion() {
+      if (!currentRegion) return;
+      const dataScreen = document.getElementById("data-screen");
+      const noData = document.getElementById("no-data");
+      noData.style.display = "none";
+      dataScreen.style.display = "none";
+      dataScreen.innerHTML = "";
+      showLoading("[ 數據即時同步中... ]");
+      await loadDataFromServer(function () {
+        filterData(currentRegion, currentAreaFilter);
+      });
+    }
+
+    async function shareCard(buttonObj, region, reportId) {
+      const baseUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      const shareUrl = baseUrl + "?region=" + encodeURIComponent(region) + "&id=" + encodeURIComponent(reportId);
+    
+      const shareText = "快來看這裡新增的噪音偵測吧!";
+      const fullShareText = shareText + "\n" + shareUrl;
+    
+      try {
+        if (navigator.share) {
+          await navigator.share({
+            text: shareText,
+            url: shareUrl
+          });
+          return;
+        }
+    
+        await navigator.clipboard.writeText(fullShareText);
+        showShareSuccess(buttonObj);
+    
+      } catch (error) {
+        try {
+          await navigator.clipboard.writeText(fullShareText);
+          showShareSuccess(buttonObj);
+        } catch (copyError) {
+          alert("連結複製失敗。");
+        }
+      }
+    }
+    // 狀態顏色修改為對應的科技藍
+    function showShareSuccess(buttonObj) {
+      const oldText = buttonObj.textContent;
+      buttonObj.textContent = "✓ 已複製連結";
+      buttonObj.style.borderColor = "var(--tech-blue)";
+      buttonObj.style.color = "var(--tech-white)";
+      buttonObj.style.backgroundColor = "var(--tech-blue)";
+
+      setTimeout(function () {
+        buttonObj.innerHTML = oldText || '<img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/sign/BBP%20LOGO/share.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8yNzI5Y2M5OC1mM2IzLTRhNGMtOTAzMC03M2M2MjZlNTM0NTIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJCQlAgTE9HTy9zaGFyZS5wbmciLCJpYXQiOjE3Nzk0MTU2OTgsImV4cCI6MTg3NDAyMzY5OH0.BoJ4ZbiD15lWsE3sYOZr9fKV8lTbYYp5m7CTODX6HNs" class="btn-icon"> 分享圖卡';
+        buttonObj.style.borderColor = "var(--tech-blue)";
+        buttonObj.style.color = "var(--tech-white)";
+        buttonObj.style.backgroundColor = "transparent";
+      }, 2000);
+    }
+
+    async function reportWithdraw(buttonObj, reportId) {
+      if (!supabaseClient) {
+        buttonObj.textContent = "❌ 連線失敗";
+        return;
+      }
+
+      const deviceId = getDeviceId();
+      buttonObj.disabled = true;
+      buttonObj.textContent = "⏳ 回報中...";
+
+      try {
+        const { data, error } = await supabaseClient.rpc("report_noise_withdraw", { p_report_id: reportId, p_device_id: deviceId });
+        if (error) throw error;
+        const result = data || {};
+
+        if (result.status === "cooldown" || result.status === "updated") {
+          buttonObj.textContent = "✓ 已送出通報";
+          localStorage.setItem("bbp_noise_reported_" + reportId, String(Date.now()));
+          return;
+        }
+
+        if (result.status === "deleted") {
+          buttonObj.textContent = "✓ 狀況解除，下架中";
+          localStorage.setItem("bbp_noise_reported_" + reportId, String(Date.now()));
+          setTimeout(function () {
+            const targetCardBox = document.getElementById("card-box-" + reportId);
+            if (targetCardBox) {
+              targetCardBox.classList.add("fade-out");
+              setTimeout(async function () {
+                await loadDataFromServer(function () { filterData(currentRegion); });
+              }, 400);
+            } else {
+              refreshCurrentRegion();
+            }
+          }, 600);
+          return;
+        }
+
+        if (result.status === "not_found") {
+          buttonObj.textContent = "⚠️ 紀錄已不存在";
+          setTimeout(function () { refreshCurrentRegion(); }, 1000);
+          return;
+        }
+
+        buttonObj.textContent = "⚠️ 無效操作";
+        setTimeout(function () {
+          buttonObj.disabled = false;
+          buttonObj.textContent = "🛑 設備已撤離";
+        }, 2000);
+
+      } catch (error) {
+        buttonObj.textContent = "❌ 系統錯誤";
+        setTimeout(function () {
+          buttonObj.disabled = false;
+          buttonObj.textContent = "🛑 設備已撤離";
+        }, 2000);
+      }
+    }
+    function enableDesktopHorizontalWheel() {
+      const dataScreen = document.getElementById("data-screen");
+      if (!dataScreen) return;
+    
+      let wheelLock = false;
+    
+      dataScreen.addEventListener("wheel", function (event) {
+        if (window.innerWidth <= 768) return;
+    
+        const isVisible = window.getComputedStyle(dataScreen).display === "flex";
+        if (!isVisible) return;
+    
+        const canScrollHorizontally = dataScreen.scrollWidth > dataScreen.clientWidth;
+        if (!canScrollHorizontally) return;
+    
+        event.preventDefault();
+    
+        const delta = Math.abs(event.deltaY) > Math.abs(event.deltaX)
+          ? event.deltaY
+          : event.deltaX;
+    
+        if (wheelLock) return;
+    
+        wheelLock = true;
+    
+        dataScreen.scrollBy({
+          left: delta * 2.2,
+          behavior: "smooth"
+        });
+    
+        setTimeout(function () {
+          wheelLock = false;
+        }, 90);
+      }, { passive: false });
+    }
+    function scrollToCard(reportId) {
+      const targetCard = document.getElementById("card-box-" + reportId);
+      if (targetCard) {
+        targetCard.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      }
+    }
+  </script>
+</body>
+</html>
