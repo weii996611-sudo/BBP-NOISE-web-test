@@ -5,35 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>台灣噪音偵測地點即時查詢｜BBPATROL 黑箱糾察隊</title>
-  <meta name="description" content="BBPATROL 黑箱糾察隊提供台灣各地噪音偵測與稽查地點查詢，依北北基、桃竹苗、中彰投、雲嘉南、高屏、宜花東分類，並支援社群回報與設備撤離通報。資料僅供行車參考。">
-  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
-  <meta name="googlebot" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="theme-color" content="#030303">
-  <meta name="color-scheme" content="dark">
-
-  <!-- 瀏覽器分頁與加入主畫面圖示：請確認 LOGO2.png 位於網站根目錄 -->
-  <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="icon" href="/favicon-48x48.png" type="image/png" sizes="48x48">
-  <link rel="icon" href="/favicon-192x192.png" type="image/png" sizes="192x192">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
-  <link rel="manifest" href="/site.webmanifest">
-
-  <!-- 社群分享資訊。上線後建議將 og:image 改成 1200x630 的絕對網址圖片 -->
-  <meta property="og:locale" content="zh_TW">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="BBPATROL 黑箱糾察隊">
-  <meta property="og:title" content="台灣噪音偵測地點即時查詢｜BBPATROL 黑箱糾察隊">
-  <meta property="og:description" content="依六大區域查詢台灣噪音偵測與稽查地點，支援社群回報、照片查看與設備撤離通報。">
-  <meta property="og:image" content="https://noise.bbpatrol.com.tw/LOGO2.png">
-  <meta property="og:image:alt" content="BBPATROL 黑箱糾察隊 LOGO">
-  <meta property="og:url" content="https://noise.bbpatrol.com.tw/">
-
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="台灣噪音偵測地點即時查詢｜BBPATROL 黑箱糾察隊">
-  <meta name="twitter:description" content="依六大區域查詢台灣噪音偵測與稽查地點，資料由社群回報整理。">
-  <meta name="twitter:image" content="https://noise.bbpatrol.com.tw/LOGO2.png">
+  <title>BBPATROL 黑箱糾察隊</title>
+  <link rel="icon" type="image/png" href="LOGO2.png">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -277,60 +250,6 @@
       font-weight: 900;
       letter-spacing: 2px;
       color: var(--tech-white);
-      margin: 0;
-    }
-
-    .menu-description {
-      max-width: 580px;
-      margin: 10px auto 0;
-      color: var(--text-muted);
-      font-size: 0.92rem;
-      line-height: 1.7;
-      text-align: center;
-    }
-
-    .seo-info {
-      width: 92%;
-      max-width: 680px;
-      margin: 2px auto 0;
-      padding: 16px 18px;
-      border: 1px solid var(--tech-gray);
-      border-radius: 12px;
-      background: rgba(10, 10, 12, 0.72);
-    }
-
-    .seo-info h2 {
-      margin: 0 0 10px;
-      font-size: 1rem;
-      line-height: 1.5;
-      text-align: center;
-    }
-
-    .seo-info details {
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 10px 0;
-    }
-
-    .seo-info details:first-of-type {
-      border-top: 0;
-    }
-
-    .seo-info summary {
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 700;
-      line-height: 1.5;
-    }
-
-    .seo-info p {
-      margin: 8px 0 0;
-      color: var(--text-muted);
-      font-size: 0.86rem;
-      line-height: 1.7;
-    }
-
-    .region-grid button {
-      font: inherit;
     }
     .store-link-group {
       position: absolute;
@@ -1169,10 +1088,7 @@
             <img src="LOGO2.png" alt="BBPATROL Logo" class="menu-logo">
           </div>
         </div>
-        <h1 class="menu-title">台灣噪音偵測地點即時查詢</h1>
-        <p class="menu-description">
-          依北北基、桃竹苗、中彰投、雲嘉南、高屏與宜花東分類，查詢社群回報的噪音偵測與稽查地點。資料可能隨設備移動而變更，請以現場標誌與執法人員指示為準。
-        </p>
+        <div class="menu-title">噪音偵測地點</div>
 
         <div class="store-link-group">
           <a class="store-link ios-link" href="https://apps.apple.com/tw/app/bbpatrol%E9%BB%91%E7%AE%B1%E7%B3%BE%E5%AF%9F%E9%9A%8A/id6746429798" target="_blank" rel="noopener">
@@ -1186,53 +1102,30 @@
       </div>
 
       <div class="region-grid">
-        <button class="region-btn" type="button" onclick="filterData('北北基')" aria-label="查看北北基噪音偵測地點">
+        <div class="region-btn" onclick="filterData('北北基')">
           <span class="region-name">北北基</span>
-        </button>
+        </div>
 
-        <button class="region-btn" type="button" onclick="filterData('桃竹苗')" aria-label="查看桃竹苗噪音偵測地點">
+        <div class="region-btn" onclick="filterData('桃竹苗')">
           <span class="region-name">桃竹苗</span>
-        </button>
+        </div>
 
-        <button class="region-btn" type="button" onclick="filterData('中彰投')" aria-label="查看中彰投噪音偵測地點">
+        <div class="region-btn" onclick="filterData('中彰投')">
           <span class="region-name">中彰投</span>
-        </button>
+        </div>
 
-        <button class="region-btn" type="button" onclick="filterData('雲嘉南')" aria-label="查看雲嘉南噪音偵測地點">
+        <div class="region-btn" onclick="filterData('雲嘉南')">
           <span class="region-name">雲嘉南</span>
-        </button>
+        </div>
 
-        <button class="region-btn" type="button" onclick="filterData('高屏')" aria-label="查看高屏噪音偵測地點">
+        <div class="region-btn" onclick="filterData('高屏')">
           <span class="region-name">高屏</span>
-        </button>
+        </div>
 
-        <button class="region-btn" type="button" onclick="filterData('宜花東')" aria-label="查看宜花東噪音偵測地點">
+        <div class="region-btn" onclick="filterData('宜花東')">
           <span class="region-name">宜花東</span>
-        </button>
+        </div>
       </div>
-
-      <section class="seo-info" aria-labelledby="noise-faq-title">
-        <h2 id="noise-faq-title">噪音偵測地點常見問題</h2>
-
-        <details>
-          <summary>這個網站提供什麼資訊？</summary>
-          <p>本網站整理台灣各地的噪音偵測與稽查設備回報，依六大區域分類，方便使用者快速查看地點、照片與回報日期。</p>
-        </details>
-
-        <details>
-          <summary>這些資料是官方即時資訊嗎？</summary>
-          <p>不是。本網站資料主要由社群使用者回報與整理，設備可能臨時移動、撤離或新增，內容僅供行車參考，請遵守速限與相關法規。</p>
-        </details>
-
-        <details>
-          <summary>發現設備已撤離怎麼辦？</summary>
-          <p>進入區域清單後，在對應地點卡片點選「設備已撤離」即可送出通報；系統會依多位使用者的回報更新顯示狀態。</p>
-        </details>
-      </section>
-
-      <noscript>
-        <div class="seo-info">本網站需要啟用 JavaScript 才能讀取最新噪音偵測地點資料。</div>
-      </noscript>
 
       <div class="home-footer">
         <div class="follow-title">投稿/回報/追蹤 BBpatrol</div>
@@ -1261,8 +1154,8 @@
       </div>
     </div>
 
-    <section id="data-screen" aria-label="噪音偵測地點清單" aria-live="polite"></section>
-    <nav id="area-filter-bar" aria-label="行政區篩選" style="display: none;"></nav>
+    <div id="data-screen"></div>
+    <div id="area-filter-bar" style="display: none;"></div>
     <div id="loading-text" style="display: none;">[ 系統連線中... ]</div>
     <div id="no-data" style="display: none;" onclick="goHome()">
       該區域暫無回報紀錄<br>
@@ -1294,150 +1187,6 @@
     const SUPABASE_ANON_KEY = "sb_publishable_k_u54EP-ZibEk5ABR2_lQA__c41LUZI";
     const REGION_LIST = ["北北基", "桃竹苗", "中彰投", "雲嘉南", "高屏", "宜花東"];
 
-    const SITE_HOME_URL = "https://noise.bbpatrol.com.tw/";
-    const ORGANIZATION_URL = "https://bbpatrol.com.tw/";
-    const SITE_LOGO_URL = "https://noise.bbpatrol.com.tw/LOGO2.png";
-
-    const SEO_REGION_NAMES = {
-      "北北基": "台北、新北、基隆",
-      "桃竹苗": "桃園、新竹、苗栗",
-      "中彰投": "台中、彰化、南投",
-      "雲嘉南": "雲林、嘉義、台南",
-      "高屏": "高雄、屏東",
-      "宜花東": "宜蘭、花蓮、台東"
-    };
-
-    function setMetaContent(selector, value) {
-      const node = document.querySelector(selector);
-      if (node) node.setAttribute("content", value);
-    }
-
-    function updateStructuredData(canonicalUrl, pageTitle, pageDescription) {
-      const existing = document.getElementById("bbp-structured-data");
-      if (existing) existing.remove();
-
-      const siteHome = SITE_HOME_URL;
-      const logoUrl = SITE_LOGO_URL;
-
-      const structuredData = {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "WebSite",
-            "@id": siteHome + "#website",
-            "url": siteHome,
-            "name": "BBPATROL 黑箱糾察隊",
-            "alternateName": ["BBPATROL", "黑箱糾察隊"],
-            "inLanguage": "zh-TW",
-            "publisher": { "@id": siteHome + "#organization" }
-          },
-          {
-            "@type": "Organization",
-            "@id": siteHome + "#organization",
-            "name": "BBPATROL 黑箱糾察隊",
-            "url": ORGANIZATION_URL,
-            "logo": {
-              "@type": "ImageObject",
-              "url": logoUrl
-            },
-            "sameAs": [
-              "https://www.facebook.com/profile.php?id=61577787920069",
-              "https://www.instagram.com/bbpatrol.tw/",
-              "https://www.threads.com/@bbpatrol.tw",
-              "https://lin.ee/zdmFhZb"
-            ]
-          },
-          {
-            "@type": "WebPage",
-            "@id": canonicalUrl + "#webpage",
-            "url": canonicalUrl,
-            "name": pageTitle,
-            "description": pageDescription,
-            "isPartOf": { "@id": siteHome + "#website" },
-            "about": {
-              "@type": "Thing",
-              "name": "台灣噪音偵測與稽查地點"
-            },
-            "inLanguage": "zh-TW",
-            "mainEntity": { "@id": canonicalUrl + "#faq" }
-          },
-          {
-            "@type": "FAQPage",
-            "@id": canonicalUrl + "#faq",
-            "mainEntity": [
-              {
-                "@type": "Question",
-                "name": "這個網站提供什麼資訊？",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "本網站整理台灣各地的噪音偵測與稽查設備回報，依六大區域分類，方便使用者快速查看地點、照片與回報日期。"
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "這些資料是官方即時資訊嗎？",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "不是。本網站資料主要由社群使用者回報與整理，設備可能臨時移動、撤離或新增，內容僅供行車參考，請遵守速限與相關法規。"
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "發現設備已撤離怎麼辦？",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "進入區域清單後，在對應地點卡片點選設備已撤離即可送出通報；系統會依多位使用者的回報更新顯示狀態。"
-                }
-              }
-            ]
-          }
-        ]
-      };
-
-      const script = document.createElement("script");
-      script.id = "bbp-structured-data";
-      script.type = "application/ld+json";
-      script.textContent = JSON.stringify(structuredData);
-      document.head.appendChild(script);
-    }
-
-    function updateSeoMetadata(regionName = "") {
-      const readableRegion = SEO_REGION_NAMES[regionName] || "";
-      const pageTitle = readableRegion
-        ? readableRegion + "噪音偵測地點｜BBPATROL 黑箱糾察隊"
-        : "台灣噪音偵測地點即時查詢｜BBPATROL 黑箱糾察隊";
-
-      const pageDescription = readableRegion
-        ? "查詢" + readableRegion + "地區的噪音偵測與稽查設備回報，包含地點、照片、回報日期及設備撤離通報。資料由社群整理，僅供行車參考。"
-        : "BBPATROL 黑箱糾察隊提供台灣各地噪音偵測與稽查地點查詢，依六大區域分類，支援社群回報與設備撤離通報。資料僅供行車參考。";
-
-      const canonical = new URL(SITE_HOME_URL);
-      if (regionName && REGION_LIST.includes(regionName)) {
-        canonical.searchParams.set("region", regionName);
-      }
-      const canonicalUrl = canonical.href;
-
-      document.title = pageTitle;
-      setMetaContent('meta[name="description"]', pageDescription);
-      setMetaContent('meta[property="og:title"]', pageTitle);
-      setMetaContent('meta[property="og:description"]', pageDescription);
-      setMetaContent('meta[property="og:url"]', canonicalUrl);
-      setMetaContent('meta[property="og:image"]', SITE_LOGO_URL);
-      setMetaContent('meta[name="twitter:title"]', pageTitle);
-      setMetaContent('meta[name="twitter:description"]', pageDescription);
-      setMetaContent('meta[name="twitter:image"]', SITE_LOGO_URL);
-
-      let canonicalLink = document.querySelector('link[rel="canonical"]');
-      if (!canonicalLink) {
-        canonicalLink = document.createElement("link");
-        canonicalLink.rel = "canonical";
-        document.head.appendChild(canonicalLink);
-      }
-      canonicalLink.href = canonicalUrl;
-
-      updateStructuredData(canonicalUrl, pageTitle, pageDescription);
-    }
-
     let allData = [];
     let currentRegion = "";
     let currentAreaFilter = "";
@@ -1451,8 +1200,6 @@
     } else {
       console.error("Supabase CDN 載入失敗");
     }
-
-    updateSeoMetadata();
 
     window.addEventListener("load", async function () {
       getDeviceId();
@@ -1494,7 +1241,7 @@
 
       isHandlingPopState = false;
     });
-    function goHome() {
+　　function goHome() {
       showMenu(true);
 
       const cleanUrl =
@@ -1777,7 +1524,6 @@
     function filterData(regionName, areaFilter = "", fromPopState = false) {
       currentRegion = regionName;
       currentAreaFilter = areaFilter;
-      updateSeoMetadata(regionName);
 
       const dataScreen = document.getElementById("data-screen");
       const noData = document.getElementById("no-data");
@@ -1834,11 +1580,11 @@
     }
 
     function createCardElement(item, cardNumber, regionName) {
-      const card = document.createElement("article");
+      const card = document.createElement("div");
       card.className = "bb-card";
       card.id = "card-box-" + item.id;
 
-      const title = document.createElement("h2");
+      const title = document.createElement("div");
       title.className = "bb-title";
       title.textContent = getAreaTitle(item.text);
       card.appendChild(title);
@@ -1855,7 +1601,7 @@
         let currentImageIndex = 0;
 
         img.src = images[currentImageIndex];
-        img.alt = (item.text || getAreaTitle(item.text)) + " 噪音偵測地點現場照片";
+        img.alt = "系統快照";
         img.loading = "lazy";
 
         img.onerror = function () {
@@ -1961,14 +1707,13 @@
         card.appendChild(imageContainer);
       }
 
-      const body = document.createElement("p");
+      const body = document.createElement("div");
       body.className = "bb-body";
       body.textContent = getBodyTextWithoutArea(item.text);
       card.appendChild(body);
 
-      const meta = document.createElement("time");
+      const meta = document.createElement("div");
       meta.className = "bb-meta";
-      if (item.createdAt) meta.dateTime = item.createdAt;
       const createdTime = formatCreatedAt(item.createdAt);
       meta.textContent = createdTime ? "T: " + createdTime : "";
       card.appendChild(meta);
@@ -1979,14 +1724,12 @@
       const shareBtn = document.createElement("button");
       shareBtn.className = "share-card-btn";
       shareBtn.type = "button";
-      shareBtn.setAttribute("aria-label", "分享" + getAreaTitle(item.text) + "噪音偵測地點");
       shareBtn.innerHTML = '<img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/sign/BBP%20LOGO/share.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8yNzI5Y2M5OC1mM2IzLTRhNGMtOTAzMC03M2M2MjZlNTM0NTIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJCQlAgTE9HTy9zaGFyZS5wbmciLCJpYXQiOjE3Nzk0MTU2MTMsImV4cCI6MTg3NDAyMzYxM30.ZuWXLgK9ohxg-YDP12NXf1Bsvj-0zwrr_DMKPRgonis" class="btn-icon"> 分享貼文';
       shareBtn.addEventListener("click", function () { shareCard(shareBtn, regionName, item.id); });
 
       const removeBtn = document.createElement("button");
       removeBtn.className = "remove-card-btn";
       removeBtn.type = "button";
-      removeBtn.setAttribute("aria-label", "回報" + getAreaTitle(item.text) + "設備已撤離");
 
       const localKey = "bbp_noise_reported_" + item.id;
       const lastReportedAt = Number(localStorage.getItem(localKey) || "0");
@@ -2009,7 +1752,6 @@
 
     function showMenu(fromPopState = false) {
       currentRegion = "";
-      updateSeoMetadata();
       document.getElementById("menu-screen").style.display = "flex";
       document.getElementById("data-screen").style.display = "none";
       document.getElementById("no-data").style.display = "none";
