@@ -1,0 +1,23 @@
+{
+  "name": "BBPATROL 黑箱糾察隊｜噪音偵測地點",
+  "short_name": "BBPATROL",
+  "description": "台灣噪音偵測與稽查地點查詢",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#030303",
+  "theme_color": "#030303",
+  "lang": "zh-TW",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
