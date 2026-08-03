@@ -5,24 +5,50 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>BBPATROL 黑箱糾察隊</title>
+  <title>台灣噪音偵測地點即時查詢｜BBPATROL 黑箱糾察隊</title>
+  <meta name="description" content="BBPATROL 黑箱糾察隊提供台灣各地噪音偵測與稽查地點查詢，依北北基、桃竹苗、中彰投、雲嘉南、高屏、宜花東分類，並支援社群回報與設備撤離通報。資料僅供行車參考。">
+  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
+  <meta name="googlebot" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#030303">
+  <meta name="color-scheme" content="dark">
+
+  <!-- 瀏覽器分頁與加入主畫面圖示：請確認 LOGO2.png 位於網站根目錄 -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon-48x48.png" type="image/png" sizes="48x48">
+  <link rel="icon" href="/favicon-192x192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <!-- 社群分享資訊。上線後建議將 og:image 改成 1200x630 的絕對網址圖片 -->
+  <meta property="og:locale" content="zh_TW">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BBPATROL 黑箱糾察隊">
+  <meta property="og:title" content="台灣噪音偵測地點即時查詢｜BBPATROL 黑箱糾察隊">
+  <meta property="og:description" content="依六大區域查詢台灣噪音偵測與稽查地點，支援社群回報、照片查看與設備撤離通報。">
+  <meta property="og:image" content="https://noise.bbpatrol.com.tw/LOGO2.png">
+  <meta property="og:image:alt" content="BBPATROL 黑箱糾察隊 LOGO">
+  <meta property="og:url" content="https://noise.bbpatrol.com.tw/">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="台灣噪音偵測地點即時查詢｜BBPATROL 黑箱糾察隊">
+  <meta name="twitter:description" content="依六大區域查詢台灣噪音偵測與稽查地點，資料由社群回報整理。">
+  <meta name="twitter:image" content="https://noise.bbpatrol.com.tw/LOGO2.png">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    /* ---------------------------------------------------
-       1. 核心變數設定 (LOGO 配色：黑、白、藍、紅)
-    --------------------------------------------------- */
+
     :root {
-      --bg-dark: #030303;        /* 極深黑底 */
-      --card-bg: #0A0A0C;        /* 卡片深灰底 */
-      --tech-blue: #1A56DB;      /* 科技藍 */
+      --bg-dark: #030303;
+      --card-bg: #0A0A0C;
+      --tech-blue: #1A56DB;
       --tech-blue-glow: rgba(26, 86, 219, 0.2);
-      --tech-red: #E11D48;       /* 警示紅 */
+      --tech-red: #E11D48;
       --tech-red-glow: rgba(225, 29, 72, 0.2);
-      --tech-white: #FFFFFF;     /* 純白 */
-      --tech-gray: #1F2937;      /* 邊框灰 */
-      --text-muted: #9CA3AF;     /* 次要文字灰 */
+      --tech-white: #FFFFFF;
+      --tech-gray: #1F2937;
+      --text-muted: #9CA3AF;
     }
 
     * {
@@ -49,9 +75,6 @@
       margin-right: 6px;
     }
 
-    /* ---------------------------------------------------
-       2. 頂部導覽列 (Header)
-    --------------------------------------------------- */
     #header {
       background-color: var(--bg-dark);
       padding: 16px 24px;
@@ -99,14 +122,13 @@
       flex-shrink: 0;
     }
 
-    /* 頂部按鈕統一風格 */
     .notify-header-btn,
     .back-btn,
     .refresh-btn {
       background-color: transparent;
       color: var(--tech-white);
       border: 1px solid var(--tech-blue);
-      border-radius: 6px; /* 改為微圓角，更具科技感 */
+      border-radius: 6px;
       padding: 6px 14px;
       font-size: 0.85rem;
       font-weight: 600;
@@ -124,9 +146,6 @@
       background-color: var(--tech-blue-glow);
     }
 
-    /* ---------------------------------------------------
-       3. 主選單 (Menu Screen)
-    --------------------------------------------------- */
     #main-wrapper {
       flex: 1;
       position: relative;
@@ -143,7 +162,7 @@
       padding: 20px;
       height: 100%;
       overflow-y: auto;
-      /* 乾淨的背景，只留極微弱的藍光點綴 */
+
       background: radial-gradient(circle at 50% 0%, var(--tech-blue-glow), transparent 50%), var(--bg-dark);
     }
 
@@ -155,7 +174,6 @@
       text-align: center;
     }
 
-    /* LOGO 容器極簡化 */
     .menu-logo-card {
       position: relative;
       width: 140px;
@@ -175,7 +193,7 @@
       align-items: center;
       justify-content: center;
     }
-    
+
     .menu-logo-card {
       cursor: pointer;
       z-index: 2;
@@ -184,18 +202,18 @@
         box-shadow 0.18s ease,
         filter 0.18s ease;
     }
-    
+
     .menu-logo-card:active {
       transform: scale(0.94);
       filter: brightness(0.92);
     }
-    
+
     .menu-logo-card.social-open {
       box-shadow:
         0 8px 30px rgba(0, 0, 0, 0.8),
         0 0 22px rgba(26, 86, 219, 0.45);
     }
-    
+
     .menu-social-pop {
       position: absolute;
       right: calc(100% + 48px);
@@ -211,13 +229,13 @@
         transform 0.2s ease;
       z-index: 3;
     }
-    
+
     .menu-social-pop.show {
       opacity: 1;
       pointer-events: auto;
       transform: translateY(-50%) translateX(0);
     }
-    
+
     .menu-social-pop .social-link {
       width: 42px;
       height: 42px;
@@ -225,11 +243,11 @@
         0 8px 18px rgba(0, 0, 0, 0.45),
         0 0 12px rgba(26, 86, 219, 0.16);
     }
-    
+
     .menu-social-pop .social-link:hover {
       transform: translateY(-2px) scale(1.08);
     }
-    
+
     .menu-social-pop .social-link:active {
       transform: scale(0.9);
     }
@@ -246,7 +264,7 @@
       color: var(--tech-white);
       border: 1px solid var(--tech-blue);
       background: var(--tech-blue-glow);
-      border-radius: 4px; /* 方正科技感 */
+      border-radius: 4px;
       padding: 4px 12px;
       font-size: 0.7rem;
       letter-spacing: 2px;
@@ -259,6 +277,60 @@
       font-weight: 900;
       letter-spacing: 2px;
       color: var(--tech-white);
+      margin: 0;
+    }
+
+    .menu-description {
+      max-width: 580px;
+      margin: 10px auto 0;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    .seo-info {
+      width: 92%;
+      max-width: 680px;
+      margin: 2px auto 0;
+      padding: 16px 18px;
+      border: 1px solid var(--tech-gray);
+      border-radius: 12px;
+      background: rgba(10, 10, 12, 0.72);
+    }
+
+    .seo-info h2 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .seo-info details {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 0;
+    }
+
+    .seo-info details:first-of-type {
+      border-top: 0;
+    }
+
+    .seo-info summary {
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .seo-info p {
+      margin: 8px 0 0;
+      color: var(--text-muted);
+      font-size: 0.86rem;
+      line-height: 1.7;
+    }
+
+    .region-grid button {
+      font: inherit;
     }
     .store-link-group {
       position: absolute;
@@ -274,7 +346,7 @@
       margin-top: 0;
       flex-wrap: nowrap;
     }
-    
+
     .store-link {
       width: 58px;
       height: 58px;
@@ -293,7 +365,7 @@
         filter 0.18s ease,
         box-shadow 0.18s ease;
     }
-    
+
     .store-link img {
       width: 58px;
       height: 58px;
@@ -305,7 +377,7 @@
       filter: brightness(1.16);
       box-shadow: 0 0 12px rgba(26, 86, 219, 0.35);
     }
-    
+
     .store-link:active {
       transform: scale(0.9);
       filter: brightness(0.9);
@@ -320,21 +392,21 @@
       align-items: center;
       gap: 13px;
     }
-    
+
     .follow-title {
       font-size: 0.95rem;
       font-weight: 700;
       color: var(--tech-white);
       letter-spacing: 1px;
     }
-    
+
     .social-link-group {
       display: flex;
       justify-content: center;
       gap: 14px;
       align-items: center;
     }
-    
+
     .social-link {
       width: 42px;
       height: 42px;
@@ -349,7 +421,7 @@
       box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
       transition: transform 0.18s ease, opacity 0.18s ease;
     }
-    
+
     .social-link:hover {
       transform: translateY(-2px) scale(1.04);
     }
@@ -364,24 +436,24 @@
       font-size: 1.7rem;
       font-family: Arial, sans-serif;
     }
-    
+
     .social-link.ig {
       background: radial-gradient(circle at 30% 110%, #fdf497 0%, #fdf497 12%, #fd5949 38%, #d6249f 62%, #285aeb 100%);
       font-size: 1.55rem;
     }
-    
+
     .social-link.threads {
       background: #ffffff;
       color: #000000;
       font-size: 1.55rem;
     }
-    
+
     .social-link.line {
       background: #06c755;
       font-size: 0.68rem;
       letter-spacing: -0.5px;
     }
-    
+
     .copyright {
       font-size: 0.78rem;
       color: var(--text-muted);
@@ -389,7 +461,6 @@
       letter-spacing: 0.5px;
     }
 
-    /* 區域按鈕網格 */
     .region-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -441,9 +512,6 @@
       background: var(--tech-blue-glow);
     }
 
-    /* ---------------------------------------------------
-       4. 數據頁面 (Data Screen) & 卡片
-    --------------------------------------------------- */
     #area-filter-bar {
       position: absolute;
       left: 0;
@@ -458,7 +526,7 @@
       scrollbar-width: none;
       scroll-padding-right: 70px;
     }
-    
+
     #area-filter-bar::-webkit-scrollbar {
       display: none;
     }
@@ -473,7 +541,7 @@
       background: linear-gradient(90deg, rgba(3, 3, 3, 0), var(--bg-dark) 72%);
       z-index: 7;
     }
-    
+
     .area-filter-btn {
       flex: 0 0 auto;
       background: rgba(10, 10, 12, 0.92);
@@ -488,13 +556,13 @@
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
       transition: all 0.2s ease;
     }
-    
+
     .area-filter-btn.active {
       color: var(--tech-white);
       border-color: var(--tech-blue);
       background: linear-gradient(135deg, var(--tech-blue), var(--tech-red));
     }
-    
+
     .area-filter-btn:active {
       transform: scale(0.96);
     }
@@ -519,39 +587,37 @@
       overscroll-behavior-x: contain;
       scroll-behavior: smooth;
     }
-    
-    /* 電腦版顯示橫向捲軸 */
+
     #data-screen::-webkit-scrollbar {
       display: block;
       height: 10px;
     }
-    
+
     #data-screen::-webkit-scrollbar-track {
       background: #050505;
     }
-    
+
     #data-screen::-webkit-scrollbar-thumb {
       background: linear-gradient(90deg, var(--tech-blue), var(--tech-red));
       border-radius: 999px;
     }
-    
+
     #data-screen::-webkit-scrollbar-thumb:hover {
       background: linear-gradient(90deg, #2f6bff, #ff2f62);
     }
-    /* 電腦版：降低吸附強度，讓滑鼠滾輪更順 */
+
     @media (min-width: 769px) {
       #data-screen {
         scroll-snap-type: x proximity;
       }
     }
-    
-    /* 手機版：保留原本一張一張吸附 */
+
     @media (max-width: 768px) {
       #data-screen {
         scroll-snap-type: x mandatory;
       }
     }
-    /* 手機版維持隱藏捲軸 */
+
     @media (max-width: 768px) {
       #data-screen::-webkit-scrollbar {
         display: none;
@@ -559,18 +625,16 @@
     }
 
     .bb-card {
-      /* 1. 簡化背景與邊框色調：採用高級灰色調 */
+
       background:
         linear-gradient(rgba(20, 20, 22, 0.65), rgba(20, 20, 22, 0.65)) padding-box,
-        solid 1px rgba(255, 255, 255, 0.08) border-box; /* 移除藍紅漸變，改為細緻的灰色單色邊框 */
-    
-      /* 2. 提升設計感：加入高級玻璃態效果 (Glassmorphism) */
-      backdrop-filter: blur(12px); /* 增加背景模糊 */
+        solid 1px rgba(255, 255, 255, 0.08) border-box;
+
+      backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-    
-      /* 3. 優化細節： */
-      border: none; /* 原本 2px 透明邊框改為 1px 灰色 solid */
-      border-radius: 16px; /* 稍微縮小圓角，更顯俐落 */
+
+      border: none;
+      border-radius: 16px;
       width: 80vw;
       max-width: 340px;
       min-width: 280px;
@@ -583,26 +647,22 @@
       position: relative;
       overflow: hidden;
       transition: all 0.4s ease;
-    
-      /* 4. 簡化陰影與發光：統一為一個更柔和、單色的深灰色陰影 */
+
       box-shadow:
-        0 10px 40px rgba(0, 0, 0, 0.6), /* 主要深色陰影 */
-        0 0 1px rgba(255, 255, 255, 0.05); /* 移除彩色發光，只留極微弱的灰白色邊框微光 */
-    }
-    
-    /* 5. 進一步簡化內部分割線條與元素色調：以下代碼僅供參考，用於優化按鈕 */
-    /* 例如，您可以將按鈕的文字顏色改為白色，並保留邊框顏色，以保持整體簡潔 */
-    .share-card-btn {
-      border: 1px solid var(--tech-blue);
-      color: #FFFFFF; /* 改為白色，更清晰 */
-    }
-    
-    .remove-card-btn {
-      border: 1px solid var(--tech-red);
-      color: #FFFFFF; /* 改為白色，更清晰 */
+        0 10px 40px rgba(0, 0, 0, 0.6),
+        0 0 1px rgba(255, 255, 255, 0.05);
     }
 
-    /* 卡片頂部的紅藍科技線條點綴 */
+    .share-card-btn {
+      border: 1px solid var(--tech-blue);
+      color: #FFFFFF;
+    }
+
+    .remove-card-btn {
+      border: 1px solid var(--tech-red);
+      color: #FFFFFF;
+    }
+
     .bb-card::before {
       content: '';
       position: absolute;
@@ -651,13 +711,13 @@
     .image-container img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* 改為 cover 讓地圖填滿更俐落 */
+      object-fit: cover;
       display: block;
     }
     .image-container {
       position: relative;
     }
-    
+
     .image-nav-btn {
       position: absolute;
       top: 50%;
@@ -676,15 +736,15 @@
       align-items: center;
       justify-content: center;
     }
-    
+
     .image-nav-btn.left {
       left: 8px;
     }
-    
+
     .image-nav-btn.right {
       right: 8px;
     }
-    
+
     .image-dots {
       position: absolute;
       left: 0;
@@ -695,14 +755,14 @@
       gap: 6px;
       z-index: 3;
     }
-    
+
     .image-dot {
       width: 7px;
       height: 7px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.45);
     }
-    
+
     .image-dot.active {
       background: #ffffff;
     }
@@ -721,10 +781,9 @@
       font-size: 0.8rem;
       margin-bottom: 20px;
       text-align: center;
-      font-family: monospace; /* 時間加上一點科技數據感 */
+      font-family: monospace;
     }
 
-    /* 卡片按鈕 */
     .card-control-group {
       display: flex;
       flex-direction: column;
@@ -771,9 +830,6 @@
       background: transparent;
     }
 
-    /* ---------------------------------------------------
-       5. 系統文字與通知 Modal
-    --------------------------------------------------- */
     #no-data, #loading-text {
       width: 100%;
       text-align: center;
@@ -785,11 +841,11 @@
       transform: translateY(-50%);
       letter-spacing: 1px;
     }
-    
+
     #no-data {
       cursor: pointer;
     }
-    
+
     .no-data-home {
       display: inline-block;
       margin-top: 10px;
@@ -821,12 +877,12 @@
       padding: 24px;
       text-align: center;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-      /* 頂部藍線 */
+
       border-top: 3px solid var(--tech-blue);
     }
 
     .notify-icon { font-size: 2rem; margin-bottom: 12px; }
-    
+
     .notify-title {
       font-size: 1.2rem;
       font-weight: 800;
@@ -843,7 +899,7 @@
 
     .notify-actions {
       display: flex;
-      flex-direction: column; /* 改為上下排列更乾淨 */
+      flex-direction: column;
       gap: 10px;
       margin-bottom: 12px;
     }
@@ -876,32 +932,29 @@
       margin-top: 16px;
     }
 
-    /* ---------------------------------------------------
-       6. 響應式微調
-    --------------------------------------------------- */
     @media (max-width: 420px) {
       .brand-title {
         font-size: 1.2rem;
       }
-    
+
       .brand-subtitle {
         font-size: 0.85rem;
         letter-spacing: 1.5px;
       }
-    
+
       .home-footer {
         padding-top: 6px;
         gap: 11px;
       }
-    
+
       .follow-title {
         font-size: 0.85rem;
       }
-    
+
       .social-link-group {
         gap: 12px;
       }
-    
+
       .social-link {
         width: 38px;
         height: 38px;
@@ -915,46 +968,46 @@
       .copyright {
         font-size: 0.7rem;
       }
-    
+
       #area-filter-bar {
         bottom: calc(18px + env(safe-area-inset-bottom));
         padding: 0 62px 10px 18px;
         scroll-padding-right: 62px;
       }
-    
+
       #area-filter-bar::after {
         bottom: calc(18px + env(safe-area-inset-bottom));
         width: 56px;
       }
-    
+
       .area-filter-btn {
         padding: 8px 14px;
         font-size: 0.86rem;
       }
-    
+
       #menu-screen {
         justify-content: flex-start;
         padding-top: 42px;
         padding-bottom: calc(110px + env(safe-area-inset-bottom));
         gap: 18px;
       }
-    
+
       .menu-hero {
         position: relative;
         margin-bottom: 0;
       }
-    
+
       .menu-logo-card {
         width: 120px;
         height: 120px;
         margin-bottom: 12px;
       }
-    
+
       .menu-logo {
         width: 80px;
         height: 80px;
       }
-    
+
       .menu-title {
         font-size: 1.3rem;
       }
@@ -962,25 +1015,25 @@
         right: calc(100% + 36px);
         gap: 8px;
       }
-      
+
       .menu-social-pop .social-link {
         width: 36px;
         height: 36px;
       }
-      
+
       .menu-social-pop .social-link.fb {
         font-size: 1.45rem;
       }
-      
+
       .menu-social-pop .social-link.ig,
       .menu-social-pop .social-link.threads {
         font-size: 1.35rem;
       }
-      
+
       .menu-social-pop .social-link.line {
         font-size: 0.58rem;
       }
-    
+
       .store-link-group {
         position: absolute;
         top: 0;
@@ -995,7 +1048,7 @@
         margin-top: 0;
         flex-wrap: nowrap;
       }
-    
+
       .store-link {
         width: 54px;
         height: 54px;
@@ -1014,56 +1067,56 @@
           filter 0.18s ease,
           box-shadow 0.18s ease;
       }
-      
+
       .store-link img {
         width: 54px;
         height: 54px;
         object-fit: contain;
         display: block;
       }
-    
+
       .store-link:hover {
         transform: translateY(-2px) scale(1.08);
         filter: brightness(1.16);
         box-shadow: 0 0 10px rgba(26, 86, 219, 0.28);
       }
-    
+
       .store-link:active {
         transform: scale(0.9);
         filter: brightness(0.9);
       }
-    
+
       .region-grid {
         width: 92%;
         max-width: 390px;
         padding-bottom: 20px;
         gap: 14px;
       }
-      
+
       .region-btn {
         min-height: 70px;
         padding: 12px;
         align-items: center;
         text-align: center;
       }
-      
+
       .region-name {
         font-size: 1.1rem;
         text-align: center;
       }
-    
+
       #data-screen {
         align-items: flex-start;
         padding-top: 42px;
         padding-bottom: calc(110px + env(safe-area-inset-bottom));
       }
-    
+
       .bb-card {
         width: 85vw;
         padding: 20px;
         transform: translateY(-10px);
       }
-    
+
       .bb-title {
         font-size: 1.85rem;
         letter-spacing: 1.5px;
@@ -1098,92 +1151,118 @@
             <a class="social-link fb" href="https://www.facebook.com/profile.php?id=61577787920069" target="_blank" rel="noopener">
               <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/S-facebook.png" alt="Facebook">
             </a>
-          
+
             <a class="social-link ig" href="https://www.instagram.com/bbpatrol.tw/" target="_blank" rel="noopener">
               <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/S-instagram.png" alt="Instagram">
             </a>
-          
+
             <a class="social-link threads" href="https://www.threads.com/@bbpatrol.tw?xmt=AQF0thXHVYLjn3-qB104806dKL_u3DEXpTiDYphUWcuX1Q5oDRx5g6GWFtGuvHTIWd5CTh_tPQ" target="_blank" rel="noopener">
               <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/S-threads.png" alt="Threads">
             </a>
-          
+
             <a class="social-link line" href="https://lin.ee/zdmFhZb" target="_blank" rel="noopener">
               <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/S-line.png" alt="LINE">
             </a>
           </div>
-        
+
           <div class="menu-logo-card" onclick="toggleMenuSocial(event)">
             <img src="LOGO2.png" alt="BBPATROL Logo" class="menu-logo">
           </div>
         </div>
-        <div class="menu-title">噪音偵測地點</div>
-    
+        <h1 class="menu-title">台灣噪音偵測地點即時查詢</h1>
+        <p class="menu-description">
+          依北北基、桃竹苗、中彰投、雲嘉南、高屏與宜花東分類，查詢社群回報的噪音偵測與稽查地點。資料可能隨設備移動而變更，請以現場標誌與執法人員指示為準。
+        </p>
+
         <div class="store-link-group">
           <a class="store-link ios-link" href="https://apps.apple.com/tw/app/bbpatrol%E9%BB%91%E7%AE%B1%E7%B3%BE%E5%AF%9F%E9%9A%8A/id6746429798" target="_blank" rel="noopener">
             <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/game.png" alt="App Store">
           </a>
-    
+
           <a class="store-link google-link"  href="https://play.google.com/store/apps/details?id=com.timer_swift&pli=1" target="_blank" rel="noopener">
             <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/play.png" alt="Google Play">
           </a>
         </div>
       </div>
-    
+
       <div class="region-grid">
-        <div class="region-btn" onclick="filterData('北北基')">
+        <button class="region-btn" type="button" onclick="filterData('北北基')" aria-label="查看北北基噪音偵測地點">
           <span class="region-name">北北基</span>
-        </div>
-    
-        <div class="region-btn" onclick="filterData('桃竹苗')">
+        </button>
+
+        <button class="region-btn" type="button" onclick="filterData('桃竹苗')" aria-label="查看桃竹苗噪音偵測地點">
           <span class="region-name">桃竹苗</span>
-        </div>
-    
-        <div class="region-btn" onclick="filterData('中彰投')">
+        </button>
+
+        <button class="region-btn" type="button" onclick="filterData('中彰投')" aria-label="查看中彰投噪音偵測地點">
           <span class="region-name">中彰投</span>
-        </div>
-    
-        <div class="region-btn" onclick="filterData('雲嘉南')">
+        </button>
+
+        <button class="region-btn" type="button" onclick="filterData('雲嘉南')" aria-label="查看雲嘉南噪音偵測地點">
           <span class="region-name">雲嘉南</span>
-        </div>
-    
-        <div class="region-btn" onclick="filterData('高屏')">
+        </button>
+
+        <button class="region-btn" type="button" onclick="filterData('高屏')" aria-label="查看高屏噪音偵測地點">
           <span class="region-name">高屏</span>
-        </div>
-    
-        <div class="region-btn" onclick="filterData('宜花東')">
+        </button>
+
+        <button class="region-btn" type="button" onclick="filterData('宜花東')" aria-label="查看宜花東噪音偵測地點">
           <span class="region-name">宜花東</span>
-        </div>
+        </button>
       </div>
-    
+
+      <section class="seo-info" aria-labelledby="noise-faq-title">
+        <h2 id="noise-faq-title">噪音偵測地點常見問題</h2>
+
+        <details>
+          <summary>這個網站提供什麼資訊？</summary>
+          <p>本網站整理台灣各地的噪音偵測與稽查設備回報，依六大區域分類，方便使用者快速查看地點、照片與回報日期。</p>
+        </details>
+
+        <details>
+          <summary>這些資料是官方即時資訊嗎？</summary>
+          <p>不是。本網站資料主要由社群使用者回報與整理，設備可能臨時移動、撤離或新增，內容僅供行車參考，請遵守速限與相關法規。</p>
+        </details>
+
+        <details>
+          <summary>發現設備已撤離怎麼辦？</summary>
+          <p>進入區域清單後，在對應地點卡片點選「設備已撤離」即可送出通報；系統會依多位使用者的回報更新顯示狀態。</p>
+        </details>
+      </section>
+
+      <noscript>
+        <div class="seo-info">本網站需要啟用 JavaScript 才能讀取最新噪音偵測地點資料。</div>
+      </noscript>
+
       <div class="home-footer">
-        <div class="follow-title">追蹤 BBpatrol 最新消息</div>
-    
+        <div class="follow-title">投稿/回報/追蹤 BBpatrol</div>
+
         <div class="social-link-group">
           <a class="social-link fb" href="https://www.facebook.com/profile.php?id=61577787920069" target="_blank" rel="noopener">
               <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/S-facebook.png" alt="Facebook">
             </a>
-          
+
             <a class="social-link ig" href="https://www.instagram.com/bbpatrol.tw/" target="_blank" rel="noopener">
               <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/S-instagram.png" alt="Instagram">
             </a>
-          
+
             <a class="social-link threads" href="https://www.threads.com/@bbpatrol.tw?xmt=AQF0thXHVYLjn3-qB104806dKL_u3DEXpTiDYphUWcuX1Q5oDRx5g6GWFtGuvHTIWd5CTh_tPQ" target="_blank" rel="noopener">
               <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/S-threads.png" alt="Threads">
             </a>
-          
+
             <a class="social-link line" href="https://lin.ee/zdmFhZb" target="_blank" rel="noopener">
               <img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/public/BBP%20LOGO/S-line.png" alt="LINE">
             </a>
         </div>
-    
+
         <div class="copyright">
           © 2025 BBpatrol 黑箱糾察隊・保留所有權利
         </div>
       </div>
     </div>
 
-    <div id="data-screen"></div>
-    <div id="area-filter-bar" style="display: none;"></div>
+    <section id="data-screen" aria-label="噪音偵測地點清單" aria-live="polite"></section>
+    <nav id="area-filter-bar" aria-label="行政區篩選" style="display: none;"></nav>
     <div id="loading-text" style="display: none;">[ 系統連線中... ]</div>
     <div id="no-data" style="display: none;" onclick="goHome()">
       該區域暫無回報紀錄<br>
@@ -1215,6 +1294,150 @@
     const SUPABASE_ANON_KEY = "sb_publishable_k_u54EP-ZibEk5ABR2_lQA__c41LUZI";
     const REGION_LIST = ["北北基", "桃竹苗", "中彰投", "雲嘉南", "高屏", "宜花東"];
 
+    const SITE_HOME_URL = "https://noise.bbpatrol.com.tw/";
+    const ORGANIZATION_URL = "https://bbpatrol.com.tw/";
+    const SITE_LOGO_URL = "https://noise.bbpatrol.com.tw/LOGO2.png";
+
+    const SEO_REGION_NAMES = {
+      "北北基": "台北、新北、基隆",
+      "桃竹苗": "桃園、新竹、苗栗",
+      "中彰投": "台中、彰化、南投",
+      "雲嘉南": "雲林、嘉義、台南",
+      "高屏": "高雄、屏東",
+      "宜花東": "宜蘭、花蓮、台東"
+    };
+
+    function setMetaContent(selector, value) {
+      const node = document.querySelector(selector);
+      if (node) node.setAttribute("content", value);
+    }
+
+    function updateStructuredData(canonicalUrl, pageTitle, pageDescription) {
+      const existing = document.getElementById("bbp-structured-data");
+      if (existing) existing.remove();
+
+      const siteHome = SITE_HOME_URL;
+      const logoUrl = SITE_LOGO_URL;
+
+      const structuredData = {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": siteHome + "#website",
+            "url": siteHome,
+            "name": "BBPATROL 黑箱糾察隊",
+            "alternateName": ["BBPATROL", "黑箱糾察隊"],
+            "inLanguage": "zh-TW",
+            "publisher": { "@id": siteHome + "#organization" }
+          },
+          {
+            "@type": "Organization",
+            "@id": siteHome + "#organization",
+            "name": "BBPATROL 黑箱糾察隊",
+            "url": ORGANIZATION_URL,
+            "logo": {
+              "@type": "ImageObject",
+              "url": logoUrl
+            },
+            "sameAs": [
+              "https://www.facebook.com/profile.php?id=61577787920069",
+              "https://www.instagram.com/bbpatrol.tw/",
+              "https://www.threads.com/@bbpatrol.tw",
+              "https://lin.ee/zdmFhZb"
+            ]
+          },
+          {
+            "@type": "WebPage",
+            "@id": canonicalUrl + "#webpage",
+            "url": canonicalUrl,
+            "name": pageTitle,
+            "description": pageDescription,
+            "isPartOf": { "@id": siteHome + "#website" },
+            "about": {
+              "@type": "Thing",
+              "name": "台灣噪音偵測與稽查地點"
+            },
+            "inLanguage": "zh-TW",
+            "mainEntity": { "@id": canonicalUrl + "#faq" }
+          },
+          {
+            "@type": "FAQPage",
+            "@id": canonicalUrl + "#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "這個網站提供什麼資訊？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "本網站整理台灣各地的噪音偵測與稽查設備回報，依六大區域分類，方便使用者快速查看地點、照片與回報日期。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "這些資料是官方即時資訊嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "不是。本網站資料主要由社群使用者回報與整理，設備可能臨時移動、撤離或新增，內容僅供行車參考，請遵守速限與相關法規。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "發現設備已撤離怎麼辦？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "進入區域清單後，在對應地點卡片點選設備已撤離即可送出通報；系統會依多位使用者的回報更新顯示狀態。"
+                }
+              }
+            ]
+          }
+        ]
+      };
+
+      const script = document.createElement("script");
+      script.id = "bbp-structured-data";
+      script.type = "application/ld+json";
+      script.textContent = JSON.stringify(structuredData);
+      document.head.appendChild(script);
+    }
+
+    function updateSeoMetadata(regionName = "") {
+      const readableRegion = SEO_REGION_NAMES[regionName] || "";
+      const pageTitle = readableRegion
+        ? readableRegion + "噪音偵測地點｜BBPATROL 黑箱糾察隊"
+        : "台灣噪音偵測地點即時查詢｜BBPATROL 黑箱糾察隊";
+
+      const pageDescription = readableRegion
+        ? "查詢" + readableRegion + "地區的噪音偵測與稽查設備回報，包含地點、照片、回報日期及設備撤離通報。資料由社群整理，僅供行車參考。"
+        : "BBPATROL 黑箱糾察隊提供台灣各地噪音偵測與稽查地點查詢，依六大區域分類，支援社群回報與設備撤離通報。資料僅供行車參考。";
+
+      const canonical = new URL(SITE_HOME_URL);
+      if (regionName && REGION_LIST.includes(regionName)) {
+        canonical.searchParams.set("region", regionName);
+      }
+      const canonicalUrl = canonical.href;
+
+      document.title = pageTitle;
+      setMetaContent('meta[name="description"]', pageDescription);
+      setMetaContent('meta[property="og:title"]', pageTitle);
+      setMetaContent('meta[property="og:description"]', pageDescription);
+      setMetaContent('meta[property="og:url"]', canonicalUrl);
+      setMetaContent('meta[property="og:image"]', SITE_LOGO_URL);
+      setMetaContent('meta[name="twitter:title"]', pageTitle);
+      setMetaContent('meta[name="twitter:description"]', pageDescription);
+      setMetaContent('meta[name="twitter:image"]', SITE_LOGO_URL);
+
+      let canonicalLink = document.querySelector('link[rel="canonical"]');
+      if (!canonicalLink) {
+        canonicalLink = document.createElement("link");
+        canonicalLink.rel = "canonical";
+        document.head.appendChild(canonicalLink);
+      }
+      canonicalLink.href = canonicalUrl;
+
+      updateStructuredData(canonicalUrl, pageTitle, pageDescription);
+    }
+
     let allData = [];
     let currentRegion = "";
     let currentAreaFilter = "";
@@ -1228,6 +1451,8 @@
     } else {
       console.error("Supabase CDN 載入失敗");
     }
+
+    updateSeoMetadata();
 
     window.addEventListener("load", async function () {
       getDeviceId();
@@ -1258,53 +1483,53 @@
     window.addEventListener("popstate", function () {
       const params = new URLSearchParams(window.location.search);
       const region = params.get("region");
-    
+
       isHandlingPopState = true;
-    
+
       if (region && REGION_LIST.includes(region)) {
         filterData(region, "", true);
       } else {
         showMenu(true);
       }
-    
+
       isHandlingPopState = false;
     });
-　　function goHome() {
+    function goHome() {
       showMenu(true);
-    
+
       const cleanUrl =
         window.location.protocol +
         "//" +
         window.location.host +
         window.location.pathname;
-    
+
       window.history.replaceState({ page: "home" }, "", cleanUrl);
     }
     function toggleMenuSocial(event) {
       if (event) event.stopPropagation();
-    
+
       const pop = document.getElementById("menu-social-pop");
       const logoCard = document.querySelector(".menu-logo-card");
-    
+
       if (!pop || !logoCard) return;
-    
+
       const isOpen = pop.classList.toggle("show");
       logoCard.classList.toggle("social-open", isOpen);
     }
-    
+
     document.addEventListener("click", function (event) {
       const pop = document.getElementById("menu-social-pop");
       const logoWrap = document.querySelector(".menu-logo-wrap");
       const logoCard = document.querySelector(".menu-logo-card");
-    
+
       if (!pop || !logoWrap || !logoCard) return;
-    
+
       if (!logoWrap.contains(event.target)) {
         pop.classList.remove("show");
         logoCard.classList.remove("social-open");
       }
     });
-    
+
     function goBackToMenu() {
       goHome();
     }
@@ -1421,95 +1646,93 @@
     }
     function getAreaTitle(text) {
       const rawText = String(text || "").trim();
-    
-      // 取前 4 個中文字，忽略空格、數字、符號
+
       const chineseChars = rawText.match(/[\u4e00-\u9fff]/g);
-    
+
       if (chineseChars && chineseChars.length >= 4) {
         return chineseChars.slice(0, 4).join("");
       }
-    
-      // 如果資料不足 4 個中文字，就退回取前 4 個字元
+
       return rawText.slice(0, 4) || "紀錄檔";
     }
     function getBodyTextWithoutArea(text) {
       const rawText = String(text || "").trim();
-    
+
       let chineseCount = 0;
       let cutIndex = 0;
-    
+
       for (let i = 0; i < rawText.length; i++) {
         if (/[\u4e00-\u9fff]/.test(rawText[i])) {
           chineseCount++;
         }
-    
+
         if (chineseCount === 4) {
           cutIndex = i + 1;
           break;
         }
       }
-    
+
       if (chineseCount >= 4) {
         return rawText.slice(cutIndex).trim();
       }
-    
+
       return rawText;
     }
     function renderAreaFilterButtons(regionItems, activeArea) {
       const bar = document.getElementById("area-filter-bar");
       if (!bar) return;
-    
+
       const areaList = [];
       const areaCountMap = {};
-    
+
       regionItems.forEach(function (item) {
         const area = getAreaTitle(item.text);
-    
+
         if (!area) return;
-    
+
         if (!areaCountMap[area]) {
           areaCountMap[area] = 0;
           areaList.push(area);
         }
-    
+
         areaCountMap[area]++;
       });
-    
+
       if (areaList.length <= 1) {
         bar.innerHTML = "";
         bar.style.display = "none";
         return;
       }
-    
+
       bar.innerHTML = "";
-    
+
       const allBtn = document.createElement("button");
       allBtn.className = "area-filter-btn" + (!activeArea ? " active" : "");
       allBtn.type = "button";
       allBtn.textContent = "全部";
-    
+
       allBtn.addEventListener("click", function () {
         filterData(currentRegion, "");
       });
-    
+
       bar.appendChild(allBtn);
-    
+
       areaList.forEach(function (area) {
         const count = areaCountMap[area] || 0;
         const displayText = count > 1 ? area + count : area;
-    
+
         const btn = document.createElement("button");
         btn.className = "area-filter-btn" + (activeArea === area ? " active" : "");
         btn.type = "button";
         btn.textContent = displayText;
-    
+
         btn.addEventListener("click", function () {
           filterData(currentRegion, area);
         });
-    
+
         bar.appendChild(btn);
       });
-    
+
       bar.style.display = "flex";
     }
 
@@ -1554,42 +1777,43 @@
     function filterData(regionName, areaFilter = "", fromPopState = false) {
       currentRegion = regionName;
       currentAreaFilter = areaFilter;
-    
+      updateSeoMetadata(regionName);
+
       const dataScreen = document.getElementById("data-screen");
       const noData = document.getElementById("no-data");
-    
+
       dataScreen.innerHTML = "";
       hideLoading();
-    
+
       const regionItems = allData.filter(function (item) {
         return String(item.region).trim() === regionName;
       });
-    
+
       renderAreaFilterButtons(regionItems, areaFilter);
-    
+
       const filtered = areaFilter
         ? regionItems.filter(function (item) {
             return getAreaTitle(item.text) === areaFilter;
           })
         : regionItems;
-    
+
       if (filtered.length > 0) {
         filtered.forEach(function (item, index) {
           const cardElement = createCardElement(item, index + 1, regionName);
           dataScreen.appendChild(cardElement);
         });
-    
+
         dataScreen.style.display = "flex";
         noData.style.display = "none";
       } else {
         dataScreen.style.display = "none";
         noData.style.display = "block";
       }
-    
+
       document.getElementById("menu-screen").style.display = "none";
       document.getElementById("back-btn").style.display = "block";
       document.getElementById("refresh-btn").style.display = "block";
-    
+
       const cleanUrl =
         window.location.protocol +
         "//" +
@@ -1597,7 +1821,7 @@
         window.location.pathname +
         "?region=" +
         encodeURIComponent(regionName);
-    
+
       if (!fromPopState) {
         window.history.pushState(
           { page: "region", region: regionName },
@@ -1605,16 +1829,16 @@
           cleanUrl
         );
       }
-    
+
       showNotifyPromptAfterRegionClick();
     }
 
     function createCardElement(item, cardNumber, regionName) {
-      const card = document.createElement("div");
+      const card = document.createElement("article");
       card.className = "bb-card";
       card.id = "card-box-" + item.id;
 
-      const title = document.createElement("div");
+      const title = document.createElement("h2");
       title.className = "bb-title";
       title.textContent = getAreaTitle(item.text);
       card.appendChild(title);
@@ -1622,129 +1846,129 @@
       const images = Array.isArray(item.imageUrls) && item.imageUrls.length > 0
         ? item.imageUrls
         : (item.imageUrl ? [item.imageUrl] : []);
-      
+
       if (images.length > 0) {
         const imageContainer = document.createElement("div");
         imageContainer.className = "image-container";
-      
+
         const img = document.createElement("img");
         let currentImageIndex = 0;
-      
+
         img.src = images[currentImageIndex];
-        img.alt = "系統快照";
+        img.alt = (item.text || getAreaTitle(item.text)) + " 噪音偵測地點現場照片";
         img.loading = "lazy";
-      
+
         img.onerror = function () {
           imageContainer.style.display = "none";
         };
-      
+
         imageContainer.appendChild(img);
-      
+
         if (images.length > 1) {
           const leftBtn = document.createElement("button");
           leftBtn.className = "image-nav-btn left";
           leftBtn.type = "button";
           leftBtn.textContent = "‹";
-      
+
           const rightBtn = document.createElement("button");
           rightBtn.className = "image-nav-btn right";
           rightBtn.type = "button";
           rightBtn.textContent = "›";
-      
+
           const dots = document.createElement("div");
           dots.className = "image-dots";
-      
+
           const dotElements = images.map(function (_, index) {
             const dot = document.createElement("span");
             dot.className = "image-dot" + (index === 0 ? " active" : "");
             dots.appendChild(dot);
             return dot;
           });
-      
+
           function updateCarouselImage() {
             img.src = images[currentImageIndex];
-          
+
             dotElements.forEach(function (dot, index) {
               dot.className = "image-dot" + (index === currentImageIndex ? " active" : "");
             });
           }
-          
+
           function showPrevImage() {
             currentImageIndex =
               currentImageIndex === 0
                 ? images.length - 1
                 : currentImageIndex - 1;
-          
+
             updateCarouselImage();
           }
-          
+
           function showNextImage() {
             currentImageIndex =
               currentImageIndex === images.length - 1
                 ? 0
                 : currentImageIndex + 1;
-          
+
             updateCarouselImage();
           }
-          
+
           leftBtn.addEventListener("click", function (event) {
             event.stopPropagation();
             showPrevImage();
           });
-          
+
           rightBtn.addEventListener("click", function (event) {
             event.stopPropagation();
             showNextImage();
           });
-          
+
           let touchStartX = 0;
           let touchStartY = 0;
           let touchEndX = 0;
           let touchEndY = 0;
-          
+
           imageContainer.addEventListener("touchstart", function (event) {
             if (!event.touches || event.touches.length === 0) return;
-          
+
             touchStartX = event.touches[0].clientX;
             touchStartY = event.touches[0].clientY;
           }, { passive: true });
-          
+
           imageContainer.addEventListener("touchend", function (event) {
             if (!event.changedTouches || event.changedTouches.length === 0) return;
-          
+
             touchEndX = event.changedTouches[0].clientX;
             touchEndY = event.changedTouches[0].clientY;
-          
+
             const diffX = touchEndX - touchStartX;
             const diffY = touchEndY - touchStartY;
-          
-            // 避免上下滑頁面時誤觸，必須是明顯左右滑才切圖
+
             if (Math.abs(diffX) < 45 || Math.abs(diffX) < Math.abs(diffY)) {
               return;
             }
-          
+
             if (diffX > 0) {
               showPrevImage();
             } else {
               showNextImage();
             }
           }, { passive: true });
-      
+
           imageContainer.appendChild(leftBtn);
           imageContainer.appendChild(rightBtn);
           imageContainer.appendChild(dots);
         }
-      
+
         card.appendChild(imageContainer);
       }
 
-      const body = document.createElement("div");
+      const body = document.createElement("p");
       body.className = "bb-body";
       body.textContent = getBodyTextWithoutArea(item.text);
       card.appendChild(body);
 
-      const meta = document.createElement("div");
+      const meta = document.createElement("time");
       meta.className = "bb-meta";
+      if (item.createdAt) meta.dateTime = item.createdAt;
       const createdTime = formatCreatedAt(item.createdAt);
       meta.textContent = createdTime ? "T: " + createdTime : "";
       card.appendChild(meta);
@@ -1755,12 +1979,14 @@
       const shareBtn = document.createElement("button");
       shareBtn.className = "share-card-btn";
       shareBtn.type = "button";
+      shareBtn.setAttribute("aria-label", "分享" + getAreaTitle(item.text) + "噪音偵測地點");
       shareBtn.innerHTML = '<img src="https://sadnhsddereuhpfvdquk.supabase.co/storage/v1/object/sign/BBP%20LOGO/share.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8yNzI5Y2M5OC1mM2IzLTRhNGMtOTAzMC03M2M2MjZlNTM0NTIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJCQlAgTE9HTy9zaGFyZS5wbmciLCJpYXQiOjE3Nzk0MTU2MTMsImV4cCI6MTg3NDAyMzYxM30.ZuWXLgK9ohxg-YDP12NXf1Bsvj-0zwrr_DMKPRgonis" class="btn-icon"> 分享貼文';
       shareBtn.addEventListener("click", function () { shareCard(shareBtn, regionName, item.id); });
 
       const removeBtn = document.createElement("button");
       removeBtn.className = "remove-card-btn";
       removeBtn.type = "button";
+      removeBtn.setAttribute("aria-label", "回報" + getAreaTitle(item.text) + "設備已撤離");
 
       const localKey = "bbp_noise_reported_" + item.id;
       const lastReportedAt = Number(localStorage.getItem(localKey) || "0");
@@ -1783,6 +2009,7 @@
 
     function showMenu(fromPopState = false) {
       currentRegion = "";
+      updateSeoMetadata();
       document.getElementById("menu-screen").style.display = "flex";
       document.getElementById("data-screen").style.display = "none";
       document.getElementById("no-data").style.display = "none";
@@ -1798,7 +2025,7 @@
         "//" +
         window.location.host +
         window.location.pathname;
-      
+
       if (!fromPopState) {
         window.history.replaceState({ page: "home" }, "", cleanUrl);
       }
@@ -1820,10 +2047,10 @@
     async function shareCard(buttonObj, region, reportId) {
       const baseUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
       const shareUrl = baseUrl + "?region=" + encodeURIComponent(region) + "&id=" + encodeURIComponent(reportId);
-    
+
       const shareText = "快來看這裡新增的噪音偵測吧!";
       const fullShareText = shareText + "\n" + shareUrl;
-    
+
       try {
         if (navigator.share) {
           await navigator.share({
@@ -1832,10 +2059,10 @@
           });
           return;
         }
-    
+
         await navigator.clipboard.writeText(fullShareText);
         showShareSuccess(buttonObj);
-    
+
       } catch (error) {
         try {
           await navigator.clipboard.writeText(fullShareText);
@@ -1845,7 +2072,7 @@
         }
       }
     }
-    // 狀態顏色修改為對應的科技藍
+
     function showShareSuccess(buttonObj) {
       const oldText = buttonObj.textContent;
       buttonObj.textContent = "✓ 已複製連結";
@@ -1922,33 +2149,33 @@
     function enableDesktopHorizontalWheel() {
       const dataScreen = document.getElementById("data-screen");
       if (!dataScreen) return;
-    
+
       let wheelLock = false;
-    
+
       dataScreen.addEventListener("wheel", function (event) {
         if (window.innerWidth <= 768) return;
-    
+
         const isVisible = window.getComputedStyle(dataScreen).display === "flex";
         if (!isVisible) return;
-    
+
         const canScrollHorizontally = dataScreen.scrollWidth > dataScreen.clientWidth;
         if (!canScrollHorizontally) return;
-    
+
         event.preventDefault();
-    
+
         const delta = Math.abs(event.deltaY) > Math.abs(event.deltaX)
           ? event.deltaY
           : event.deltaX;
-    
+
         if (wheelLock) return;
-    
+
         wheelLock = true;
-    
+
         dataScreen.scrollBy({
           left: delta * 2.2,
           behavior: "smooth"
         });
-    
+
         setTimeout(function () {
           wheelLock = false;
         }, 90);
