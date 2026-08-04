@@ -1314,7 +1314,6 @@
       font-size: 1.25rem;
       font-weight: 900;
       cursor: pointer;
-
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1348,6 +1347,21 @@
     .footer-ad-dot.active {
       background: #fff;
       box-shadow: 0 0 8px rgba(255, 255, 255, 0.55);
+    }
+
+    /* 電腦版：內容超過可視高度時從頂部開始排列，避免首頁上方被裁切；內容較少時仍保持垂直置中 */
+    @media (min-width: 421px) {
+      #menu-screen {
+        justify-content: flex-start;
+      }
+
+      #menu-screen > .menu-hero {
+        margin-top: auto;
+      }
+
+      #menu-screen > .home-footer {
+        margin-bottom: auto;
+      }
     }
 
     @media (max-width: 420px) {
