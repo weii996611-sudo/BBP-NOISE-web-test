@@ -1173,6 +1173,197 @@
         letter-spacing: 1.5px;
       }
     }
+
+
+    /* ===== 業主廣告功能：彈窗廣告 + Footer 輪播廣告 ===== */
+    .marketing-ad-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 20000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .marketing-ad-dialog {
+      position: relative;
+      width: min(92vw, 520px);
+      max-height: 88dvh;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      background: #050505;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.78);
+      overflow: hidden;
+    }
+
+    .marketing-ad-link {
+      display: block;
+      width: 100%;
+      line-height: 0;
+      text-decoration: none;
+    }
+
+    .marketing-ad-image {
+      display: block;
+      width: 100%;
+      max-height: calc(88dvh - 46px);
+      object-fit: contain;
+      background: #050505;
+    }
+
+    .marketing-ad-badge,
+    .footer-ad-badge {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      z-index: 3;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 999px;
+      padding: 4px 9px;
+      background: rgba(0, 0, 0, 0.72);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      line-height: 1;
+    }
+
+    .marketing-ad-close {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      z-index: 4;
+      display: none;
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.82);
+      color: #fff;
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .marketing-ad-close:active {
+      transform: scale(0.92);
+    }
+
+    .marketing-ad-countdown {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 14px;
+      background: #080808;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      text-align: center;
+    }
+
+    .footer-ad-carousel {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 5 / 2;
+      min-height: 96px;
+      overflow: hidden;
+      border: 1px solid var(--tech-gray);
+      border-radius: 12px;
+      background: #070707;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.38);
+    }
+
+    .footer-ad-link {
+      display: block;
+      width: 100%;
+      height: 100%;
+      line-height: 0;
+      text-decoration: none;
+    }
+
+    .footer-ad-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #070707;
+      opacity: 1;
+      transition: opacity 0.22s ease;
+    }
+
+    .footer-ad-image.is-changing {
+      opacity: 0;
+    }
+
+    .footer-ad-nav {
+      position: absolute;
+      top: 50%;
+      z-index: 3;
+      width: 32px;
+      height: 32px;
+      transform: translateY(-50%);
+      border: 1px solid rgba(255, 255, 255, 0.38);
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.64);
+      color: #fff;
+      font-size: 1.25rem;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .footer-ad-nav.prev { left: 8px; }
+    .footer-ad-nav.next { right: 8px; }
+
+    .footer-ad-dots {
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      z-index: 3;
+      display: flex;
+      gap: 6px;
+      transform: translateX(-50%);
+    }
+
+    .footer-ad-dot {
+      width: 7px;
+      height: 7px;
+      border: 0;
+      border-radius: 50%;
+      padding: 0;
+      background: rgba(255, 255, 255, 0.42);
+      cursor: pointer;
+    }
+
+    .footer-ad-dot.active {
+      background: #fff;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.55);
+    }
+
+    @media (max-width: 420px) {
+      .marketing-ad-modal {
+        padding: 12px;
+      }
+
+      .marketing-ad-dialog {
+        width: min(94vw, 420px);
+      }
+
+      .footer-ad-carousel {
+        min-height: 88px;
+        border-radius: 10px;
+      }
+
+      .footer-ad-nav {
+        width: 29px;
+        height: 29px;
+      }
+    }
+
   </style>
 </head>
 
@@ -1260,6 +1451,17 @@
       </div>
 
       <div class="home-footer">
+
+        <section class="footer-ad-carousel" id="footer-ad-carousel" aria-label="合作廣告輪播" style="display: none;">
+          <span class="footer-ad-badge">廣告</span>
+          <a class="footer-ad-link" id="footer-ad-link" target="_blank" rel="sponsored noopener noreferrer">
+            <img class="footer-ad-image" id="footer-ad-image" src="" alt="合作廣告" loading="lazy">
+          </a>
+          <button class="footer-ad-nav prev" id="footer-ad-prev" type="button" aria-label="上一則廣告">‹</button>
+          <button class="footer-ad-nav next" id="footer-ad-next" type="button" aria-label="下一則廣告">›</button>
+          <div class="footer-ad-dots" id="footer-ad-dots" aria-label="廣告頁次"></div>
+        </section>
+
         <div class="follow-title">投稿/回報/追蹤 BBpatrol</div>
 
         <div class="social-link-group">
@@ -1314,7 +1516,57 @@
     </div>
   </main>
 
+  <div class="marketing-ad-modal" id="marketing-ad-modal" aria-hidden="true">
+    <div class="marketing-ad-dialog" role="dialog" aria-modal="true" aria-label="合作廣告">
+      <span class="marketing-ad-badge">廣告</span>
+      <button class="marketing-ad-close" id="marketing-ad-close" type="button" aria-label="關閉廣告">×</button>
+      <a class="marketing-ad-link" id="marketing-ad-link" target="_blank" rel="sponsored noopener noreferrer">
+        <img class="marketing-ad-image" id="marketing-ad-image" src="" alt="業主行銷海報廣告">
+      </a>
+      <div class="marketing-ad-countdown" id="marketing-ad-countdown" aria-live="polite"></div>
+    </div>
+  </div>
+
   <script>
+
+
+    /*
+      ===== 廣告設定區 =====
+      只需修改這一段，即可更換廣告圖片、連結、輪播速度。
+      圖片檔請與 index.html 放在同一層，或填入完整 https 圖片網址。
+    */
+    const AD_SETTINGS = {
+      popup: {
+        enabled: true,
+        image: "popup-ad.svg",
+        link: "https://www.instagram.com/bbpatrol.tw/",
+        alt: "業主行銷海報廣告",
+        closeDelayMs: 5000,
+        showOncePerBrowserSession: true
+      },
+      footer: {
+        enabled: true,
+        intervalMs: 5000,
+        items: [
+          {
+            image: "footer-ad-1.svg",
+            link: "https://apps.apple.com/tw/app/bbpatrol%E9%BB%91%E7%AE%B1%E7%B3%BE%E5%AF%9F%E9%9A%8A/id6746429798",
+            alt: "Footer 輪播廣告一"
+          },
+          {
+            image: "footer-ad-2.svg",
+            link: "https://play.google.com/store/apps/details?id=com.timer_swift&pli=1",
+            alt: "Footer 輪播廣告二"
+          },
+          {
+            image: "footer-ad-3.svg",
+            link: "https://lin.ee/zdmFhZb",
+            alt: "Footer 輪播廣告三"
+          }
+        ]
+      }
+    };
+
     const SUPABASE_URL = "https://sadnhsddereuhpfvdquk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_k_u54EP-ZibEk5ABR2_lQA__c41LUZI";
     const REGION_LIST = ["北北基", "桃竹苗", "中彰投", "雲嘉南", "高屏", "宜花東"];
@@ -1449,6 +1701,11 @@
     }
 
     function showNotifyModal(forceShow) {
+      const marketingAdModal = document.getElementById("marketing-ad-modal");
+      if (marketingAdModal && marketingAdModal.style.display === "flex") {
+        setTimeout(function () { showNotifyModal(forceShow); }, 500);
+        return;
+      }
       if (!forceShow && !shouldShowNotifyPrompt()) return;
       notifyPromptShownThisSession = true;
       const modal = document.getElementById("notify-modal");
@@ -2055,6 +2312,218 @@
         }, 90);
       }, { passive: false });
     }
+
+
+    function setAdvertisingLink(anchor, url) {
+      if (!anchor) return;
+      const safeUrl = String(url || "").trim();
+      if (safeUrl) {
+        anchor.href = safeUrl;
+        anchor.style.pointerEvents = "auto";
+        anchor.setAttribute("aria-label", "開啟廣告連結");
+      } else {
+        anchor.removeAttribute("href");
+        anchor.style.pointerEvents = "none";
+        anchor.removeAttribute("aria-label");
+      }
+    }
+
+    function initPopupAdvertisement() {
+      const settings = AD_SETTINGS.popup || {};
+      const modal = document.getElementById("marketing-ad-modal");
+      const image = document.getElementById("marketing-ad-image");
+      const link = document.getElementById("marketing-ad-link");
+      const closeButton = document.getElementById("marketing-ad-close");
+      const countdown = document.getElementById("marketing-ad-countdown");
+
+      if (!settings.enabled || !settings.image || !modal || !image || !link || !closeButton || !countdown) {
+        return;
+      }
+
+      const popupSessionKey = "bbp_marketing_popup_shown";
+
+      if (settings.showOncePerBrowserSession) {
+        try {
+          if (sessionStorage.getItem(popupSessionKey) === "1") {
+            return;
+          }
+        } catch (error) {
+          console.warn("無法讀取彈窗廣告顯示紀錄：", error);
+        }
+      }
+
+      image.src = settings.image;
+      image.alt = settings.alt || "業主行銷海報廣告";
+      setAdvertisingLink(link, settings.link);
+
+      image.onerror = function () {
+        modal.style.display = "none";
+        modal.setAttribute("aria-hidden", "true");
+        console.warn("彈窗廣告圖片載入失敗：", settings.image);
+      };
+
+      modal.style.display = "flex";
+      modal.setAttribute("aria-hidden", "false");
+      closeButton.style.display = "none";
+
+      if (settings.showOncePerBrowserSession) {
+        try {
+          sessionStorage.setItem(popupSessionKey, "1");
+        } catch (error) {
+          console.warn("無法儲存彈窗廣告顯示紀錄：", error);
+        }
+      }
+
+      const delayMs = Math.max(0, Number(settings.closeDelayMs) || 5000);
+      let remainingSeconds = Math.ceil(delayMs / 1000);
+      countdown.textContent = remainingSeconds + " 秒後可關閉廣告";
+
+      const countdownTimer = setInterval(function () {
+        remainingSeconds -= 1;
+        if (remainingSeconds > 0) {
+          countdown.textContent = remainingSeconds + " 秒後可關閉廣告";
+        }
+      }, 1000);
+
+      const unlockTimer = setTimeout(function () {
+        clearInterval(countdownTimer);
+        countdown.textContent = "點擊圖片可前往廣告頁面";
+        closeButton.style.display = "block";
+        closeButton.focus({ preventScroll: true });
+      }, delayMs);
+
+      closeButton.addEventListener("click", function closeAdvertisement() {
+        clearInterval(countdownTimer);
+        clearTimeout(unlockTimer);
+        modal.style.display = "none";
+        modal.setAttribute("aria-hidden", "true");
+      }, { once: true });
+    }
+
+    function initFooterAdvertisementCarousel() {
+      const footerSettings = AD_SETTINGS.footer || {};
+      const items = Array.isArray(footerSettings.items)
+        ? footerSettings.items.filter(function (item) { return item && item.image; })
+        : [];
+
+      const carousel = document.getElementById("footer-ad-carousel");
+      const image = document.getElementById("footer-ad-image");
+      const link = document.getElementById("footer-ad-link");
+      const prevButton = document.getElementById("footer-ad-prev");
+      const nextButton = document.getElementById("footer-ad-next");
+      const dotsContainer = document.getElementById("footer-ad-dots");
+
+      if (!footerSettings.enabled || items.length === 0 || !carousel || !image || !link || !prevButton || !nextButton || !dotsContainer) {
+        return;
+      }
+
+      let currentIndex = 0;
+      let rotationTimer = null;
+      let touchStartX = 0;
+      let touchEndX = 0;
+
+      function renderDots() {
+        dotsContainer.innerHTML = "";
+        items.forEach(function (_, index) {
+          const dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = "footer-ad-dot" + (index === currentIndex ? " active" : "");
+          dot.setAttribute("aria-label", "切換至第 " + (index + 1) + " 則廣告");
+          dot.addEventListener("click", function () {
+            showItem(index);
+            restartRotation();
+          });
+          dotsContainer.appendChild(dot);
+        });
+      }
+
+      function showItem(index) {
+        currentIndex = (index + items.length) % items.length;
+        const item = items[currentIndex];
+
+        image.classList.add("is-changing");
+        setTimeout(function () {
+          image.src = item.image;
+          image.alt = item.alt || "合作廣告";
+          setAdvertisingLink(link, item.link);
+          image.classList.remove("is-changing");
+          renderDots();
+        }, 120);
+      }
+
+      function stopRotation() {
+        if (rotationTimer) {
+          clearInterval(rotationTimer);
+          rotationTimer = null;
+        }
+      }
+
+      function startRotation() {
+        stopRotation();
+        if (items.length <= 1) return;
+        const intervalMs = Math.max(2000, Number(footerSettings.intervalMs) || 5000);
+        rotationTimer = setInterval(function () {
+          showItem(currentIndex + 1);
+        }, intervalMs);
+      }
+
+      function restartRotation() {
+        startRotation();
+      }
+
+      prevButton.addEventListener("click", function () {
+        showItem(currentIndex - 1);
+        restartRotation();
+      });
+
+      nextButton.addEventListener("click", function () {
+        showItem(currentIndex + 1);
+        restartRotation();
+      });
+
+      carousel.addEventListener("mouseenter", stopRotation);
+      carousel.addEventListener("mouseleave", startRotation);
+      carousel.addEventListener("focusin", stopRotation);
+      carousel.addEventListener("focusout", startRotation);
+
+      carousel.addEventListener("touchstart", function (event) {
+        if (!event.touches || event.touches.length === 0) return;
+        touchStartX = event.touches[0].clientX;
+      }, { passive: true });
+
+      carousel.addEventListener("touchend", function (event) {
+        if (!event.changedTouches || event.changedTouches.length === 0) return;
+        touchEndX = event.changedTouches[0].clientX;
+        const difference = touchEndX - touchStartX;
+        if (Math.abs(difference) < 45) return;
+        showItem(difference > 0 ? currentIndex - 1 : currentIndex + 1);
+        restartRotation();
+      }, { passive: true });
+
+      image.onerror = function () {
+        console.warn("Footer 廣告圖片載入失敗：", image.src);
+        if (items.length > 1) {
+          showItem(currentIndex + 1);
+        } else {
+          carousel.style.display = "none";
+        }
+      };
+
+      carousel.style.display = "block";
+      prevButton.style.display = items.length > 1 ? "block" : "none";
+      nextButton.style.display = items.length > 1 ? "block" : "none";
+      dotsContainer.style.display = items.length > 1 ? "flex" : "none";
+      showItem(0);
+      startRotation();
+    }
+
+    function initAdvertising() {
+      initFooterAdvertisementCarousel();
+      initPopupAdvertisement();
+    }
+
+    window.addEventListener("load", initAdvertising);
+
     function scrollToCard(reportId) {
       const targetCard = document.getElementById("card-box-" + reportId);
       if (targetCard) {

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1250" viewBox="0 0 1000 1250">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07111f"/><stop offset="1" stop-color="#1a56db"/></linearGradient></defs>
+<rect width="1000" height="1250" fill="url(#g)"/><rect x="55" y="55" width="890" height="1140" rx="48" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="4"/>
+<text x="500" y="510" fill="#fff" font-size="78" font-family="Arial, sans-serif" font-weight="700" text-anchor="middle">彈窗廣告範例</text>
+<text x="500" y="620" fill="#fff" font-size="42" font-family="Arial, sans-serif" text-anchor="middle">5 秒後顯示關閉按鈕</text>
+<text x="500" y="1080" fill="#fff" fill-opacity=".68" font-size="30" font-family="Arial, sans-serif" text-anchor="middle">請以相同檔名替換成業主海報</text></svg>
